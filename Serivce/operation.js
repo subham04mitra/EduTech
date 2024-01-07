@@ -5,9 +5,6 @@ const nodemailer = require('nodemailer');
 const otpgenerator=require('otp-generator')
 const query=require('../DB_Config/Query');
 
-const accountSid = 'AC813a1ae8a13bf82ad541ae066304c057';
-const authToken = 'aa898dc83a5fb5e47a699ddb071a9b61';
-
 const client = require('twilio')(accountSid, authToken);
 let operation = {};
 
