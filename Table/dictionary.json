@@ -1,0 +1,61 @@
+{
+    "user": {
+        "name": {
+            "type": "String"
+        },
+        "email": {
+            "type": "String",
+            "unique":true
+     
+            
+        },
+        "mobile": {
+            "type": "Number",
+            "unique":true
+            
+        },
+        "college": {
+            "type": "String"
+        },
+        "course": {
+            "type": "String"
+        },
+        "city": {
+            "type": "String"
+        },
+        "password": {
+            "type": "String"
+        },
+        "pin_code":{
+            "type":"Number"
+        },
+        "active":{
+            "type":"String"
+        }
+    },
+    "jwt": {
+        "token": {
+            "type": "String"
+        },
+        "name": {
+            "type": "String"
+        },
+        "logout": {
+            "type": "Boolean"
+        },
+        "email":{
+            "type":"String"
+        }
+    },
+    "otp":{
+        "email":{
+            "type":"String"
+        },
+        "otp":{
+            "type":"Number"
+        },
+        "timestamp":{
+            "type":"Date"
+        }
+    }
+}
