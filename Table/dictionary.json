@@ -31,8 +31,11 @@
         },
         "active":{
             "type":"String"
-        }
-    },
+        },
+        "verified":{
+            "type":"String"
+        }    
+},
     "jwt": {
         "token": {
             "type": "String"
