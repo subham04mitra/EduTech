@@ -45,7 +45,7 @@ operation.ulogIn = async (data) => {
 operation.userRegistration = async (data) => {
     return new Promise(async (resolve, reject) => {
         data.active='N'
-
+        data.verified='N'
         connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
         let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y", verified:"Y"},connection_details))
         if(typeof check!="string"){
