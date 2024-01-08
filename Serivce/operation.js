@@ -46,7 +46,7 @@ operation.userRegistration = async (data) => {
         data.active='N'
 
         connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
-        let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y"},connection_details))
+        let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y", verified:"Y"},connection_details))
         if(typeof check!="string"){
             resolve({ Success: true, Message: "User Already Registered" })
         }
