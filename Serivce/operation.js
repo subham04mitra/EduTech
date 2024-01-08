@@ -8,7 +8,11 @@ const query=require('../DB_Config/Query');
 let operation = {};
 
 operation.ulogIn = async (data) => {
-    return new Promise(async (resolve, reject) => {
+    if(data.email=="" || data.password==""){
+     reject({ Success: false, Message: "Give Login Credetials !" })
+    }
+    else{
+     return new Promise(async (resolve, reject) => {
         data.active="Y"
         
        data.verified="Y" 
@@ -41,6 +45,8 @@ operation.ulogIn = async (data) => {
         }
         reject({ Success: false, Message: "Connection Failed !" })
     });
+    }
+   
 };
 
 operation.userRegistration = async (data) => {
