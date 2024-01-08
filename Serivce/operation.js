@@ -10,7 +10,7 @@ let operation = {};
 operation.ulogIn = async (data) => {
     return new Promise(async (resolve, reject) => {
         data.active="Y"
-        data.verified="Y"
+        
         connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
         let result=await(query.findOne(data,connection_details));
         if (typeof result !="string") {
