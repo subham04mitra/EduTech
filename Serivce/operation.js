@@ -91,7 +91,7 @@ operation.otpVerify = async (data) => {
        }
        else{        
             await query.deleteRecord({_id:current._id},connection_details)
-            resolve({ Success: true, Message: "Email Verified !"  }
+            resolve({ Success: true, Message: "Email Verified !"  })
        
       
        }
