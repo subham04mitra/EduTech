@@ -80,17 +80,24 @@ operation.otpVerify = async (data) => {
     console.log(data);
     connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
     let result=await(query.findOne(data,connection_details));
+
+        if (typeof result !="string") {  
+           reject({ Success: false, Message: "Wrong OTP !" })
+        }
+        else{ 
     let current=result[0]
        if(Date.now()-current.timestamp>300000){
         reject({ Success: false, Message: "Otp has Expired!" })
        }
        else{        
             await query.deleteRecord({_id:current._id},connection_details)
-            resolve({ Success: true, Message: "Email Verified !"  })
-        
+            resolve({ Success: true, Message: "Email Verified !"  }
        
       
        }
+
+        }
+
     })
 }
 
