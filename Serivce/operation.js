@@ -51,98 +51,30 @@ operation.ulogIn = async (data) => {
 
 operation.userRegistration = async (data) => {
     return new Promise(async (resolve, reject) => {
-        data.active='N'
-        data.verified='N'
+        data.active='Y'
+      
         connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
-        let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y", verified:"Y",name:data.name,pin_code:data.pin_code},connection_details))
+        let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y",name:data.name,pin_code:data.pin_code},connection_details))
         if(typeof check!="string"){
             resolve({ Success: true, Message: "User Already Registered" })
         }
         else{
-            // console.log(data);
-            let check2=await(query.findOne(data,connection_details))
-            console.log(".....",check2);
-            if(typeof check2!="string"){
-               
-                const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
-                connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
-
-                var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: process.env.MAIL_ID,
-                        pass: process.env.MAIL_PASSWORD
-                    }
-                });
-                var mailOptions = {
-                    from: process.env.MAIL_ID,
-                    to: `${data.email}`,
-                    subject: 'REGISTRATION OTP',
-                    text: `OTP FOR VERIFICATION : ${Otp}`
-                  };
-                  
-                  transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                      console.log(error);
-                    } else {
-                      console.log('Email sent::: ' + info.response);
-                    }
-                  });
-
-               let res= await(query.insertSingle({email:data.email,otp:Otp,timestamp:Date.now(),index:{expires:60}},connection_details2));
-               if(res!="Duplicate Email/Mobile" && typeof res !="string"){
-                resolve({ Success: true, Message: "Otp Sent Succesfully  !",  Data: check2[0],Otp:Otp })
-               }
-               else{
-                reject({ Success: false, Message: res  })
-               }
-            }
-            else{
+           
+              
+            
            console.log("here");
             let result=await(query.insertSingle(data,connection_details));
             if (typeof result !="string") {
-                const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
-                connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
-
                 
-                var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: process.env.MAIL_ID,
-                        pass: process.env.MAIL_PASSWORD
-                    }
-                });
-                var mailOptions = {
-                    from: process.env.MAIL_ID,
-                    to: `${data.email}`,
-                    subject: 'REGISTRATION OTP',
-                    text: `OTP FOR VERIFICATION : ${Otp}`
-                  };
-                  
-                  transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                      console.log(error);
-                    } else {
-                      console.log('Email sent: ' + info.response);
-                    }
-                  });
-
-               let res= await(query.insertSingle({email:data.email,otp:Otp,timestamp:Date.now(),index:{expires:60}},connection_details2));
-               if(res!="Duplicate Email/Mobile" && typeof res !="string"){
-                resolve({ Success: true, Message: "Otp Sent Succesfully  !",  Data: result,Otp:Otp })
-               }
-               else{
-                reject({ Success: false, Message: res  })
-               }
+                resolve({ Success: true, Message: "User Registered !",  Data: result })
+               
                 
              }
              else{
                 reject({ Success: false, Message: result  })
             }
-        }}
-    })
-}
-
+        }})}
+    
 operation.otpVerify = async (data) => {
     return new Promise(async (resolve, reject) => {
     console.log(data);
@@ -152,18 +84,50 @@ operation.otpVerify = async (data) => {
        if(Date.now()-current.timestamp>300000){
         reject({ Success: false, Message: "Otp has Expired!" })
        }
-       else{
-        connection_details2=[process.env.DATABASE,process.env.USER_SCHEMA]
-        let activate=await query.activateUser(data,connection_details2)
-        if(activate==true){
+       else{        
             await query.deleteRecord({_id:current._id},connection_details)
-            resolve({ Success: true, Message: "User Registered Successfully !"  })
-        }
-        else{
-            reject({ Success: false, Message: "ERROR" })
-        }
+            resolve({ Success: true, Message: "Email Verified !"  })
+        
+       
       
        }
+    })
+}
+
+operation.sendOtp = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
+        connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_ID,
+                pass: process.env.MAIL_PASSWORD
+            }
+        });
+        var mailOptions = {
+            from: process.env.MAIL_ID,
+            to: `${data.email}`,
+            subject: 'REGISTRATION OTP',
+            text: `OTP FOR VERIFICATION : ${Otp}`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+       let res= await(query.insertSingle({email:data.email,otp:Otp,timestamp:Date.now(),index:{expires:60}},connection_details2));
+       if(typeof res !="string"){
+        resolve({ Success: true, Message: "Otp Sent Succesfully  !",Otp:Otp })
+       }
+       else{
+        reject({ Success: false, Message: res  })
+       }
+    
     })
 }
 module.exports=operation;

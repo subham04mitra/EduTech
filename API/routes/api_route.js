@@ -7,5 +7,6 @@ const control = require('../controller/controller');
 
 route.post('/login', control.ulogin)
 route.post('/registration', control.uReg)
-route.post('/registration/verify', control.uverify)
+route.post('/sendotp', control.sendotp)
+route.post('/verifyotp', control.uverify)
 module.exports = route;

@@ -40,4 +40,15 @@ service.uverify = async (req, res) => {
         res.json(err)
     }
 }
+service.sendotp = async (req, res) => {
+    let data = req.body;
+    try {
+        let response = await db.sendOtp(data);
+        if (response) {
+            res.json(response);
+        }
+    } catch (err) {
+        res.json(err)
+    }
+}
 module.exports=service;
