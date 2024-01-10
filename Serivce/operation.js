@@ -80,8 +80,8 @@ operation.otpVerify = async (data) => {
     console.log(data);
     connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
     let result=await(query.findOne(data,connection_details));
-
-        if (typeof result.length==0) {  
+console.log(result)
+        if ( result.length==0) {  
            reject({ Success: false, Message: "Wrong OTP !" })
         }
         else{ 
