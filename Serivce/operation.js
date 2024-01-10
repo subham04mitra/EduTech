@@ -15,7 +15,7 @@ operation.ulogIn = async (data) => {
      return new Promise(async (resolve, reject) => {
         data.active="Y"
         
-       data.verified="Y" 
+       
        connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
         let result=await(query.findOne(data,connection_details));
         if (typeof result !="string") {
@@ -81,7 +81,7 @@ operation.otpVerify = async (data) => {
     connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
     let result=await(query.findOne(data,connection_details));
 console.log(result)
-        if ( result.length==0) {  
+        if (typeof result=="string") {  
            reject({ Success: false, Message: "Wrong OTP !" })
         }
         else{ 
