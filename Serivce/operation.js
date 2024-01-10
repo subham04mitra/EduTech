@@ -118,8 +118,14 @@ operation.sendOtp = async (data) => {
             subject: 'REGISTRATION OTP',
             text: `OTP FOR VERIFICATION : ${Otp}`
           };
-          
-          transporter.sendMail(mailOptions, function(error, info){
+if(data.email==""){
+
+reject({ Success: false, Message: "Please Provide Email"  })
+    
+}
+else{ 
+
+transporter.sendMail(mailOptions, function(error, info){
             if (error) {
               console.log(error);
             } else {
@@ -134,6 +140,10 @@ operation.sendOtp = async (data) => {
        else{
         reject({ Success: false, Message: res  })
        }
+    
+}
+        
+          
     
     })
 }
