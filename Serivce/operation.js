@@ -118,7 +118,7 @@ operation.sendOtp = async (data) => {
             from: process.env.MAIL_ID,
             to: `${data.email}`,
             subject: 'REGISTRATION OTP',
-            text: `OTP FOR VERIFICATION : ${Otp}`,
+            // text: `OTP FOR VERIFICATION : ${Otp}`,
             html: `<div
             style={{
               fontFamily: "Helvetica,Arial,sans-serif",
@@ -138,10 +138,10 @@ operation.sendOtp = async (data) => {
                     fontWeight: 600
                   }}
                 >
-                  Your Brand
+                  Technoid Kolkata
                 </a>
               </div>
-              <p style={{ fontSize: "1.1em" }}>Hi,</p>
+              <p style={{ fontSize: "1.1em" }}>Hi, ${data.name}</p>
               <p>
                 Thank you for choosing Technoid. Use the following OTP to complete your
                 Sign Up procedures. OTP is valid for 5 minutes
@@ -161,7 +161,7 @@ operation.sendOtp = async (data) => {
               <p style={{ fontSize: "0.9em" }}>
                 Regards,
                 <br />
-                Your Brand
+               Technoid
               </p>
               <hr style={{ border: "none", borderTop: "1px solid #eee" }} />
               <div
@@ -175,7 +175,7 @@ operation.sendOtp = async (data) => {
                 }}
               >
                 <p>Technoid Kolkata</p>
-                <p>Kolkatay</p>
+                <p>Kolkata</p>
                 <p>West Bengal</p>
               </div>
             </div>
