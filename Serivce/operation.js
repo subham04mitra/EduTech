@@ -237,7 +237,7 @@ operation.forgotPassword = async (data) => {
      }
      else{
       connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
-      let result=await(query.updateRecord({email:data.email,password:data.old_password},{password:data.new_password},connection_details));
+      let result=await(query.updateRecord({email:data.email},{password:data.new_password},connection_details));
       if (result==true) {
           resolve({ Success: true, Message: "Password Changed Successfully" });
       } else {
