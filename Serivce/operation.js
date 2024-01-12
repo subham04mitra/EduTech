@@ -141,7 +141,7 @@ operation.sendOtp = async (data) => {
                   Technoid Kolkata
                 </a>
               </div>
-              <p style={{ fontSize: "1.1em" }}>Hi, ${data.name}</p>
+              <p style={{ fontSize: "1.1em" }}>Hi, ${data.email}</p>
               <p>
                 Thank you for choosing Technoid. Use the following OTP to complete your
                 Sign Up procedures. OTP is valid for 5 minutes
