@@ -69,4 +69,17 @@ queries.deleteRecord=async(data,connection_details)=>{
         await Model.deleteOne(data);
      
 }}
+
+queries.updateRecord=async(data,set,connection_details)=>{
+    if(data && connection_details){       
+      
+        let Model=connection.schemaconnect(connection_details[0],connection_details[1])
+        let update_response=  await Model.updateOne(data,{$set:set},{ upsert: false })
+        if (update_response.modifiedCount != 0) {
+            return true
+        } else {
+            return false
+        }
+     
+}}
 module.exports=queries;

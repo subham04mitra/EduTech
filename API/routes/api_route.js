@@ -9,4 +9,6 @@ route.post('/login', control.ulogin)
 route.post('/registration', control.uReg)
 route.post('/sendotp', control.sendotp)
 route.post('/verifyotp', control.uverify)
+route.post('/logout', verify, control.ulogout);
+route.put('/reset-password', verify, control.resetPassword);
 module.exports = route;

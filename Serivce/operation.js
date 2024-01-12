@@ -141,7 +141,7 @@ operation.sendOtp = async (data) => {
                   Technoid Kolkata
                 </a>
               </div>
-              <p style={{ fontSize: "1.1em" }}>Hi, ${data.name}</p>
+              <p style={{ fontSize: "1.1em" }}>Hi, ${data.email}</p>
               <p>
                 Thank you for choosing Technoid. Use the following OTP to complete your
                 Sign Up procedures. OTP is valid for 5 minutes
@@ -210,4 +210,42 @@ transporter.sendMail(mailOptions, function(error, info){
     
     })
 }
+
+
+
+operation.ulogOut = async (token) => {
+  // console.log(token);
+  return new Promise(async (resolve, reject) => {
+     
+
+      connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+      let result=await(query.updateRecord({token:token},{logout:true},connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "Logged Out Successfully" });
+      } else {
+          reject({ Success: false, Message: "Already Logged Out" });
+      }
+  });
+};
+
+
+operation.forgotPassword = async (data) => {
+  // console.log(token);
+  return new Promise(async (resolve, reject) => {
+     if(data.email==""){
+      reject({ Success: false, Message: "Provide Email!" });
+     }
+     else{
+      connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let result=await(query.updateRecord({email:data.email,password:data.old_password},{password:data.new_password},connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "Password Changed Successfully" });
+      } else {
+          reject({ Success: false, Message: "User Details Not Matched !" });
+      }
+     }
+
+      
+  });
+};
 module.exports=operation;

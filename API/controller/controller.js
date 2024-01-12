@@ -51,4 +51,33 @@ service.sendotp = async (req, res) => {
         res.json(err)
     }
 }
+
+
+service.ulogout = async (req, res) => {
+    let token = req.headers.token;
+    // console.log(req.headers.token);
+
+    try {
+        let response = await db.ulogOut(token);
+        if (response) {
+            res.json( response );
+        }
+    } catch (err) {
+        res.json(err)
+    }
+}
+
+service.resetPassword = async (req, res) => {
+    let data = req.body;
+    // console.log(req.headers.token);
+
+    try {
+        let response = await db.forgotPassword(data);
+        if (response) {
+            res.json( response );
+        }
+    } catch (err) {
+        res.json(err)
+    }
+}
 module.exports=service;
