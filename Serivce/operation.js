@@ -240,6 +240,33 @@ operation.forgotPassword = async (data) => {
       let result=await(query.updateRecord({email:data.email},{password:data.new_password},connection_details));
       if (result==true) {
           resolve({ Success: true, Message: "Password Changed Successfully" });
+      }
+      else if(result=="true"){
+        resolve({ Success: true, Message: "New Password Can not be Same as Old One !" });
+      } else {
+          reject({ Success: false, Message: "User Details Not Matched !" });
+      }
+     }
+
+      
+  });
+};
+
+
+operation.userDataUpdate = async (data,id) => {
+  // console.log(token);
+  return new Promise(async (resolve, reject) => {
+     if(!id){
+      reject({ Success: false, Message: "Nothing to Update" });
+     }
+     else{
+      connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let result=await(query.updateRecord({_id:id},data,connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "User Details Updated" });
+      }
+      else if(result=="true"){
+        resolve({ Success: true, Message: "Nothing to Update !" });
       } else {
           reject({ Success: false, Message: "User Details Not Matched !" });
       }

@@ -75,9 +75,13 @@ queries.updateRecord=async(data,set,connection_details)=>{
       
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
         let update_response=  await Model.updateOne(data,{$set:set},{ upsert: false })
+        console.log(update_response);
         if (update_response.modifiedCount != 0) {
             return true
-        } else {
+        } 
+        else if(update_response.modifiedCount==0 && update_response.matchedCount!=0){
+            return "true"
+        }else {
             return false
         }
      

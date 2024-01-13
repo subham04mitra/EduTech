@@ -11,4 +11,5 @@ route.post('/sendotp', control.sendotp)
 route.post('/verifyotp', control.uverify)
 route.post('/logout', verify, control.ulogout);
 route.put('/reset-password', verify, control.resetPassword);
+route.put('/user/update/:id', verify, control.userUpdate);
 module.exports = route;

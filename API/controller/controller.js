@@ -80,4 +80,19 @@ service.resetPassword = async (req, res) => {
         res.json(err)
     }
 }
+
+service.userUpdate = async (req, res) => {
+    let data = req.body;
+    let id=req.params.id
+    // console.log(req.headers.token);
+
+    try {
+        let response = await db.userDataUpdate(data,id);
+        if (response) {
+            res.json( response );
+        }
+    } catch (err) {
+        res.json(err)
+    }
+}
 module.exports=service;
