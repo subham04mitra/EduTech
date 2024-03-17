@@ -93,14 +93,13 @@ console.log(result)
             await query.deleteRecord({_id:current._id},connection_details)
             resolve({ Success: true, Message: "Email Verified !"  })
        
-      
+
        }
 
         }
 
     })
 }
-
 operation.sendOtp = async (data) => {
     return new Promise(async (resolve, reject) => {
         const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
@@ -111,75 +110,13 @@ operation.sendOtp = async (data) => {
                 user: process.env.MAIL_ID,
                 pass: process.env.MAIL_PASSWORD
             }
-        });
-       let design =""
-      
+        });    
         var mailOptions = {
             from: process.env.MAIL_ID,
             to: `${data.email}`,
             subject: 'REGISTRATION OTP',
-            // text: `OTP FOR VERIFICATION : ${Otp}`,
-            html: `<div
-            style={{
-              fontFamily: "Helvetica,Arial,sans-serif",
-              minWidth: 1000,
-              overflow: "auto",
-              lineHeight: 2
-            }}
-          >
-            <div style={{ margin: "50px auto", width: "70%", padding: "20px 0" }}>
-              <div style={{ borderBottom: "1px solid #eee" }}>
-                <a
-                  href=""
-                  style={{
-                    fontSize: "1.4em",
-                    color: "#00466a",
-                    textDecoration: "none",
-                    fontWeight: 600
-                  }}
-                >
-                  Technoid Kolkata
-                </a>
-              </div>
-              <p style={{ fontSize: "1.1em" }}>Hi, ${data.email}</p>
-              <p>
-                Thank you for choosing Technoid. Use the following OTP to complete your
-                Sign Up procedures. OTP is valid for 5 minutes
-              </p>
-              <h2
-                style={{
-                  background: "#00466a",
-                  margin: "0 auto",
-                  width: "max-content",
-                  padding: "0 10px",
-                  color: "#fff",
-                  borderRadius: 4
-                }}
-              >
-                ${Otp}
-              </h2>
-              <p style={{ fontSize: "0.9em" }}>
-                Regards,
-                <br />
-               Technoid
-              </p>
-              <hr style={{ border: "none", borderTop: "1px solid #eee" }} />
-              <div
-                style={{
-                  float: "right",
-                  padding: "8px 0",
-                  color: "#aaa",
-                  fontSize: "0.8em",
-                  lineHeight: 1,
-                  fontWeight: 300
-                }}
-              >
-                <p>Technoid Kolkata</p>
-                <p>Kolkata</p>
-                <p>West Bengal</p>
-              </div>
-            </div>
-          </div>`
+            text: `OTP FOR VERIFICATION : ${Otp}`,
+           
           };
 if(data.email==""){
 
@@ -198,7 +135,7 @@ transporter.sendMail(mailOptions, function(error, info){
 
        let res= await(query.insertSingle({email:data.email,otp:Otp,timestamp:Date.now(),index:{expires:60}},connection_details2));
        if(typeof res !="string"){
-        resolve({ Success: true, Message: "Otp Sent Succesfully  !",Otp:Otp })
+        resolve({ Success: true, Message: "Otp Sent Succesfully  !" })
        }
        else{
         reject({ Success: false, Message: res  })

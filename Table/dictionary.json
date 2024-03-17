@@ -14,10 +14,10 @@
             "unique":true
             
         },
-        "college": {
+        "company": {
             "type": "String"
         },
-        "course": {
+        "designation": {
             "type": "String"
         },
         "city": {
