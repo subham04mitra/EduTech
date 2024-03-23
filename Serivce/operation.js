@@ -485,5 +485,28 @@ operation.updateStocks=async(code,qty)=>{
     }
 }
 
-
+operation.billList = async (page,limit) => {
+            
+    return new Promise(async (resolve, reject) => {
+      let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
+      let connection_details2=process.env.BILL_DET_SCHEMA
+      let commonField='bill_number'
+      let label='detail'
+       let bill_result=await(query.join(page,limit,connection_details1,connection_details2,commonField,label));
+       if (typeof bill_result !="string") {
+      
+           resolve({
+               Success: true, Data: bill_result, pagination: {
+                   page: page != undefined ? page : 1, limit: limit != undefined ? limit : 20
+               }
+           })
+       }
+       else{
+           resolve({ Success: false, Message: bill_result  })
+       }
+       reject({ Success: false, Message: "Connection Failed !" })
+   });
+   
+  
+};
 module.exports=operation;

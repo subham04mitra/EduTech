@@ -208,4 +208,16 @@ service.billAdd= async (req, res) => {
         res.json(err)
     }
 }
+service.billList = async (req, res) => {
+    let page=(req.query.page);
+    let limit=(req.query.limit)
+        try {
+            let response = await db.billList(page,limit);
+            if (response) {
+                res.json(response);
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
 module.exports=service;

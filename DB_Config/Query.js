@@ -41,7 +41,7 @@ queries.findAll=async(page,limit,connection_details)=>{
             let skipElements = page != undefined ? (page - 1) * limit : 0;
         let limitTo = limit != undefined ? limit : 20;
         //console.log("748965''''",skipElements,limitTo);
-            let result=await userModel.find({}, {}, { skip: skipElements, limit: limitTo });
+            let result=await userModel.find({}, {__v:0}, { skip: skipElements, limit: limitTo });
             //console.log(".....",result);
             if(result.length !=0){
                 return result;
@@ -142,6 +142,57 @@ queries.FindLast=async(data,connection_details)=>{
             let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
             
             let result=await userModel.find().sort(data).limit(1);
+            //console.log(".....",result);
+            if(result.length !=0){
+                return result;
+            }
+            else{
+                return "No Data Found !"
+            }
+                  
+    
+
+        }catch(e){
+            
+            //console.log(e);
+            return "No Data Found error!"
+        }       
+        }
+        else{
+            return "Something Went Wrong ! Please Try Again"
+        }
+        
+}
+
+queries.join=async(page,limit,connection_details,table,field,label)=>{
+    if(connection_details){
+        try{
+            
+            //console.log("748965''''",page,limit);
+            let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
+            let skipElements = page != undefined ? (page - 1) * limit : 0;
+        let limitTo = limit != undefined ? limit : 20;
+        //console.log("748965''''",skipElements,limitTo);
+        let result = await userModel.aggregate([
+            {
+              $lookup: {
+                from: `${table}s`, 
+                localField: field, 
+                foreignField: field, 
+                as: label 
+              }
+            },
+            {
+              $project: {
+                __v: 0 
+              }
+            },
+            { $skip: skipElements }, 
+            { $limit: limitTo } 
+          ]);
+          
+          console.log(result);
+          
             //console.log(".....",result);
             if(result.length !=0){
                 return result;
