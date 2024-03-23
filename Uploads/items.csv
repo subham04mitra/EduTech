@@ -1,0 +1,7 @@
+Code,Name,Category,Subcategory,Sale,Cost,Source,Description,Quantity
+BR01,Basmati Rice,Grocery,Rice,200,230,AK Rice,Rice,10
+EM01,Emami Mustard Oi,Oil,Mustard Oil,120,150,Emami,Oil,20
+BR02,Basmati Rice,Grocery,Rice,220,250,BR Rice,RIce,5
+MD01,Masoor Dal,Grocery,Dal,110,150,Nabaratna,Dal,15
+MD02,Maida,Grocery,Maida,35,45,Fortune,Maida,12
+CA01,Chakki Ata,Grocery,Ata,35,45,Ganesh,Ata,13

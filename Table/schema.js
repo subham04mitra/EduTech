@@ -16,6 +16,17 @@ schemas.otpSchema=()=>{
     let schemas=new schema(dict.otp)
     return schemas;
 }
-
+schemas.itemSchema=()=>{
+    let schemas=new schema(dict.item)
+    return schemas;
+}
+schemas.billSchema=()=>{
+    let schemas=new schema(dict.bill)
+    return schemas;
+}
+schemas.bill_detSchema=()=>{
+    let schemas=new schema(dict.bill_det)
+    return schemas;
+}
 module.exports = schemas;
 

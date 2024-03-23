@@ -5,30 +5,72 @@ let queries={}
 
 queries.findOne=async(data,connection_details)=>{
     if(data && connection_details){
-        console.log(data);       
-        let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
-        let result=await userModel.find(data,{__v:0,password:0});
-        if(result.length !=0){
-            return result;
+        try{
+                 
+            let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
+            
+            let result=await userModel.find(data,{__v:0});
+           
+            //console.log(".....",result);
+            if(result.length !=0){
+                return result;
+            }
+            else{
+                return "No Data Found !"
+            }
+                  
+    
+
+        }catch(e){
+            
+            //console.log(e);
+            return "No Data Found error!"
+        }       
         }
         else{
-            return "No Data Found !"
+            return "Something Went Wrong ! Please Try Again"
         }
-              
-    }
-    else{
-        return "Something Went Wrong ! Please Try Again"
-    }
+        
 }
+queries.findAll=async(page,limit,connection_details)=>{
+    if(connection_details){
+        try{
+            
+            //console.log("748965''''",page,limit);
+            let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
+            let skipElements = page != undefined ? (page - 1) * limit : 0;
+        let limitTo = limit != undefined ? limit : 20;
+        //console.log("748965''''",skipElements,limitTo);
+            let result=await userModel.find({}, {}, { skip: skipElements, limit: limitTo });
+            //console.log(".....",result);
+            if(result.length !=0){
+                return result;
+            }
+            else{
+                return "No Data Found !"
+            }
+                  
+    
 
-
+        }catch(e){
+            
+            //console.log(e);
+            return "No Data Found error!"
+        }       
+        }
+        else{
+            return "Something Went Wrong ! Please Try Again"
+        }
+        
+}
 queries.insertSingle=async(data,connection_details)=>{
     if(data && connection_details){       
-      
+      //console.log(data);
+      //console.log(connection_details);
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
       try{
         let insertVal= await Model.insertMany(data)
-       
+       //console.log("isert",insertVal);
         if(insertVal.length !=0){
             return insertVal;
         }
@@ -36,7 +78,8 @@ queries.insertSingle=async(data,connection_details)=>{
             return "Something Went Wrong ! Please Try Again"
         }
       }catch(e){
-        return "Duplicate Email/Mobile"
+        //console.log(e);
+        return "Duplicate Data"
       }
         
               
@@ -66,7 +109,13 @@ queries.deleteRecord=async(data,connection_details)=>{
     if(data && connection_details){       
       
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
-        await Model.deleteOne(data);
+        let result=await Model.deleteOne(data);
+        if(result.deletedCount>0){
+            return true
+        }
+        else{
+            return false
+        }
      
 }}
 
@@ -75,7 +124,7 @@ queries.updateRecord=async(data,set,connection_details)=>{
       
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
         let update_response=  await Model.updateOne(data,{$set:set},{ upsert: false })
-        console.log(update_response);
+        //console.log(update_response);
         if (update_response.modifiedCount != 0) {
             return true
         } 
@@ -86,4 +135,32 @@ queries.updateRecord=async(data,set,connection_details)=>{
         }
      
 }}
+queries.FindLast=async(data,connection_details)=>{
+    if(data && connection_details){
+        try{
+                 
+            let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
+            
+            let result=await userModel.find().sort(data).limit(1);
+            //console.log(".....",result);
+            if(result.length !=0){
+                return result;
+            }
+            else{
+                return "No Data Found !"
+            }
+                  
+    
+
+        }catch(e){
+            
+            //console.log(e);
+            return "No Data Found error!"
+        }       
+        }
+        else{
+            return "Something Went Wrong ! Please Try Again"
+        }
+        
+}
 module.exports=queries;

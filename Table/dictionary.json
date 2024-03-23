@@ -17,10 +17,7 @@
         "company": {
             "type": "String"
         },
-        "designation": {
-            "type": "String"
-        },
-        "city": {
+        "address": {
             "type": "String"
         },
         "password": {
@@ -60,5 +57,82 @@
         "timestamp":{
             "type":"Date"
         }
+    },
+    "item": {
+        "name": {
+            "type": "String"
+        },
+        "category": {
+            "type": "String"           
+        }
+        ,
+        "subcategory": {
+            "type": "String" 
+        } ,
+        "CP": {
+            "type": "Number" 
+        }   ,
+        "SP": {
+            "type": "Number" 
+        } ,
+        "item_cd": {
+            "type": "String" 
+        } ,
+        "source": {
+            "type": "String" 
+        } ,
+        "item_des": {
+            "type": "String" 
+        } ,
+        "qty":{
+            "type":"Number"
+        }
+},
+"bill":{
+    "bill_number":{
+        "type":"String"
+    },
+    "amount":{
+        "type":"Number"
+    },
+    "date":{
+        "type":"Date"
+    },
+    "user":{
+        "type":"String"
     }
+},
+"bill_det":{
+    "bill_number":{
+        "type":"String"
+    },
+    "cus_name":{
+        "type":"String"
+    },
+    "cus_email":{
+        "type":"String"
+    },
+    "cus_mobile":{
+        "type":"String"
+    },
+    "cus_address":{
+        "type":"String"
+    },
+    "item_cd":{
+        "type":"String"
+    },
+    "item_qty":{
+        "type":"Number"
+    },
+    "item_rate":{
+        "type":"Number"
+    },
+    
+    "amount":{
+        "type":"Number"
+    },
+    "date":{
+        "type":"Date"
+    }
+}
 }
