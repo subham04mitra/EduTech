@@ -30,7 +30,7 @@ connection.schemaconnect=(db,mdl)=>{
     const dbs= connection.dbconnect(true)
     db=`${db}`
     mdl=`${mdl}s`
-    console.log(mdl);
+    
     let database = dbs.useDb(db)
     let Model = database.model(mdl, mapping[mdl]);
     return Model 

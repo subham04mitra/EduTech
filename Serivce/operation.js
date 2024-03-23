@@ -17,7 +17,7 @@ operation.ulogIn = async (data) => {
         data.active="Y"
         
        
-       connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
         let result=await(query.findOne(data,connection_details));
         if (typeof result !="string") {
             let jwtData = {
@@ -32,7 +32,7 @@ operation.ulogIn = async (data) => {
                 logout:false,
                 email:result[0].email              
             }
-            jwt_connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+           let jwt_connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
              let jwtresult=   await(query.insertSingle(jwtdetails,jwt_connection_details));
              if (typeof jwtresult !="string") {
                 resolve({ Success: true, Message: "Login Successfull",  Data: result ,Token:token})
@@ -55,7 +55,7 @@ operation.userRegistration = async (data) => {
     return new Promise(async (resolve, reject) => {
         data.active='Y'
       
-        connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let  connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
         let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y",name:data.name,pin_code:data.pin_code},connection_details))
         if(typeof check!="string"){
             resolve({ Success: true, Message: "User Already Registered" })
@@ -80,7 +80,7 @@ operation.userRegistration = async (data) => {
 operation.otpVerify = async (data) => {
     return new Promise(async (resolve, reject) => {
     //console.log(data);
-    connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
+   let connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
     let result=await(query.findOne(data,connection_details));
 //console.log(result)
         if (typeof result=="string") {  
@@ -105,7 +105,7 @@ operation.otpVerify = async (data) => {
 operation.sendOtp = async (data) => {
     return new Promise(async (resolve, reject) => {
         const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
-        connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
+       let connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -155,7 +155,7 @@ operation.ulogOut = async (token) => {
   return new Promise(async (resolve, reject) => {
      
 
-      connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+     let connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
       let result=await(query.updateRecord({token:token},{logout:true},connection_details));
       if (result==true) {
           resolve({ Success: true, Message: "Logged Out Successfully" });
@@ -173,7 +173,7 @@ operation.forgotPassword = async (data) => {
       reject({ Success: false, Message: "Provide Email!" });
      }
      else{
-      connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+     let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
       let result=await(query.updateRecord({email:data.email},{password:data.new_password},connection_details));
       if (result==true) {
           resolve({ Success: true, Message: "Password Changed Successfully" });
@@ -197,7 +197,7 @@ operation.userDataUpdate = async (data,id) => {
       reject({ Success: false, Message: "Nothing to Update" });
      }
      else{
-      connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
       let result=await(query.updateRecord({_id:id},data,connection_details));
       if (result==true) {
           resolve({ Success: true, Message: "User Details Updated" });
@@ -216,7 +216,7 @@ operation.userDataUpdate = async (data,id) => {
 operation.itemCreate = async (data) => {
     return new Promise(async (resolve, reject) => {
           
-        connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
         let check=await(query.findOne({item_cd:data.item_cd,source:data.source},connection_details))
         //console.log(check);
         if(typeof check!="string"){
@@ -251,7 +251,7 @@ operation.itemList = async (page,limit) => {
                 
                 
                
-               connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+               let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
                 let result=await(query.findAll(page,limit,connection_details));
                 if (typeof result !="string") {
                     resolve({
@@ -277,7 +277,7 @@ operation.itemView = async (item_cd) => {
             reject({ Success: false, Message: "Give proper id !" })
         }
         else{
-        connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
         let result=await(query.findOne({item_cd:item_cd},connection_details));
         if (typeof result !="string") {
             resolve({
@@ -299,7 +299,7 @@ operation.itemUpdate = async (data,item_cd) => {
         reject({ Success: false, Message: "Nothing to Update" });
        }
        else{
-        connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
         let result=await(query.updateRecord({item_cd:item_cd},data,connection_details));
         if (result==true) {
             resolve({ Success: true, Message: "Item Details Updated" });
@@ -321,7 +321,7 @@ return new Promise(async (resolve, reject) => {
     reject({ Success: false, Message: "Nothing to delete" });
     }
     else{
-    connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
     let result=await(query.deleteRecord({_id:id},connection_details));
     if (result==true) {
         resolve({ Success: true, Message: "Item Deleted Successfully" });
@@ -350,7 +350,7 @@ operation.importCsvtoItem = async (items) => {
             
         }
 
-        connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
         // //console.log(items);
         for(i of items){
             let check=await(query.findOne({item_cd:i.item_cd,source:i.source},connection_details))
@@ -396,8 +396,8 @@ operation.importCsvtoItem = async (items) => {
 operation.billCreate = async (data,decode) => {
     return new Promise(async (resolve, reject) => {
           
-        connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
-        connection_details1=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
+       let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
+        let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
         let bill_no=await operation.generateBillno();
         let bill_amount=0
         for(let i of data.items){
@@ -423,10 +423,11 @@ operation.billCreate = async (data,decode) => {
             
                      
         }
-        
-       let bill_item_result=await(query.insertSingle(bill_item,connection_details));
+        console.log(connection_details1);
+       let bill_item_result=await(query.insertSingle(bill_item,connection_details1));
+       console.log(bill_item_result);
        if(typeof bill_item_result!="string"){
-        let bill_det_result=await(query.insertSingle(bill_det,connection_details1));
+        let bill_det_result=await(query.insertSingle(bill_det,connection_details2));
         if(typeof bill_det_result!='string'){
             resolve({Success:true,Message:'Bill Created',"Bill NUmber":bill_no})
         }else{
@@ -441,7 +442,7 @@ operation.billCreate = async (data,decode) => {
         )}
 operation.generateBillno=async()=>{
     let bill_no=""
-    connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
     let check=await(query.findOne({},connection_details))
     if(typeof check!="string"){
         
@@ -470,11 +471,12 @@ operation.generateBillno=async()=>{
     
 }
 operation.updateStocks=async(code,qty)=>{
-    console.log(code,qty);
-    connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
-    let check=await(query.findOne({item_cd:code}))
-    let result=await(query.updateRecord({item_cd:code},{qty:(check.qty-qty)},connection_details));
-    console.log(result);
+   
+   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+    let check=await(query.findOne({item_cd:code},connection_details))
+    
+    let result=await(query.updateRecord({item_cd:code},{qty:(check[0].qty-qty)},connection_details));
+    
     if(result==true){
         return true
     }

@@ -32,4 +32,5 @@ route.put('/item/:itemcode', verify,control.itemUpdate)
 route.delete('/item/:id', verify,control.itemDelete)
 route.post('/item/add/csv',uploadstock.single('file'),verify, control.importItem);
 route.post('/bill', verify,control.billAdd)
+route.get('/bill', verify,control.billList)
 module.exports = route;
