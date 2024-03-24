@@ -4,7 +4,7 @@ env.config();
 const query=require('../DB_Config/Query');
 async function verify(req, res, next) {
     let token = req.headers.token;
-    // console.log("auth token",token);
+    console.log("auth token",token);
     try {
         let decode = jwt.verify(token, process.env.SECRET_KEY);
         req.decode = decode;
@@ -19,10 +19,13 @@ async function verify(req, res, next) {
                 next();
             }
             else {
+                
                 res.json({ Success: false, Message: "Already Logout" })
             }
         }
     } catch (err) {
+
+        console.log(err);
         // console.log(token);
         res.json({ Success: false, Message: "Session Time Out, Login Again !" })
     }

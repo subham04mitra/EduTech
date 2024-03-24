@@ -10,9 +10,11 @@ queries.findOne=async(data,connection_details)=>{
             let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
             
             let result=await userModel.find(data,{__v:0});
-           
+            
             //console.log(".....",result);
             if(result.length !=0){
+                const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
                 return result;
             }
             else{
@@ -39,10 +41,12 @@ queries.findAll=async(page,limit,connection_details)=>{
             //console.log("748965''''",page,limit);
             let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
             let skipElements = page != undefined ? (page - 1) * limit : 0;
-        let limitTo = limit != undefined ? limit : 20;
+        let limitTo = limit != undefined ? limit : 500;
         //console.log("748965''''",skipElements,limitTo);
             let result=await userModel.find({}, {__v:0}, { skip: skipElements, limit: limitTo });
             //console.log(".....",result);
+            const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
             if(result.length !=0){
                 return result;
             }
@@ -70,6 +74,8 @@ queries.insertSingle=async(data,connection_details)=>{
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
       try{
         let insertVal= await Model.insertMany(data)
+        const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
        //console.log("isert",insertVal);
         if(insertVal.length !=0){
             return insertVal;
@@ -94,6 +100,8 @@ queries.activateUser=async(data,connection_details)=>{
       
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
      let update_response=  await Model.updateOne({email:data.email},{$set:{active:"Y",verified:"Y"}})
+     const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
        if(update_response.modifiedCount !=0){
         return true;
        }
@@ -110,6 +118,8 @@ queries.deleteRecord=async(data,connection_details)=>{
       
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
         let result=await Model.deleteOne(data);
+        const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
         if(result.deletedCount>0){
             return true
         }
@@ -125,6 +135,8 @@ queries.updateRecord=async(data,set,connection_details)=>{
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
         let update_response=  await Model.updateOne(data,{$set:set},{ upsert: false })
         //console.log(update_response);
+        const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
         if (update_response.modifiedCount != 0) {
             return true
         } 
@@ -143,6 +155,8 @@ queries.FindLast=async(data,connection_details)=>{
             
             let result=await userModel.find().sort(data).limit(1);
             //console.log(".....",result);
+            const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
             if(result.length !=0){
                 return result;
             }
@@ -171,7 +185,7 @@ queries.join=async(page,limit,connection_details,table,field,label)=>{
             //console.log("748965''''",page,limit);
             let userModel=connection.schemaconnect(connection_details[0],connection_details[1])
             let skipElements = page != undefined ? (page - 1) * limit : 0;
-        let limitTo = limit != undefined ? limit : 20;
+        let limitTo = limit != undefined ? limit : 500;
         //console.log("748965''''",skipElements,limitTo);
         let result = await userModel.aggregate([
             {
@@ -192,7 +206,8 @@ queries.join=async(page,limit,connection_details,table,field,label)=>{
           ]);
           
           console.log(result);
-          
+          const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
             //console.log(".....",result);
             if(result.length !=0){
                 return result;

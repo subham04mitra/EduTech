@@ -2,7 +2,7 @@ const sch = require('../Table/schema')
 const mongoose = require('mongoose');
 const env=require('dotenv');
 env.config();
-let connection={};
+
 let mapping={
     "users":sch.UserSchema(),
     "jwts":sch.jwtSchema(),
@@ -11,23 +11,35 @@ let mapping={
     "bills":sch.billSchema(),
     "bill_dets":sch.bill_detSchema()
 }
-connection.dbconnect=(flag)=>{
-  
-    if(flag){
+
+let connection = {};
+
+connection.dbconnect = (flag) => {
+    console.log(flag);
+    if (!flag) {
         const url = process.env.URL;
-        const connection = mongoose.createConnection(url,
-            { useNewUrlParser: true, useUnifiedTopology: true })
-         
-        return connection;
+        connection.instance = mongoose.createConnection(url, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log("Connection established");
+        
+    } else if(flag==true) {
+        if (connection.instance) {
+            connection.instance.close();
+            console.log("Connection closed");
+            connection.instance = null;
+        } else {
+            console.log("No active connection to close");
+        }
     }
-    
-   
+    return connection.instance;
 }
+
+
+
 
 
 connection.schemaconnect=(db,mdl)=>{
 
-    const dbs= connection.dbconnect(true)
+    const dbs= connection.dbconnect(false)
     db=`${db}`
     mdl=`${mdl}s`
     

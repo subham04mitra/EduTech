@@ -256,7 +256,7 @@ operation.itemList = async (page,limit) => {
                 if (typeof result !="string") {
                     resolve({
                         Success: true, Data: result, pagination: {
-                            page: page != undefined ? page : 1, limit: limit != undefined ? limit : 20
+                            page: page != undefined ? page : 1, limit: limit != undefined ? limit : 500
                         }
                     })
                 }
@@ -497,7 +497,7 @@ operation.billList = async (page,limit) => {
       
            resolve({
                Success: true, Data: bill_result, pagination: {
-                   page: page != undefined ? page : 1, limit: limit != undefined ? limit : 20
+                   page: page != undefined ? page : 1, limit: limit != undefined ? limit : 500
                }
            })
        }
