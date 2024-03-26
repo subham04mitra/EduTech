@@ -22,10 +22,12 @@ connection.dbconnect = (flag) => {
         console.log("Connection established");
         
     } else if(flag==true) {
+
         if (connection.instance) {
             connection.instance.close();
             console.log("Connection closed");
             connection.instance = null;
+            
         } else {
             console.log("No active connection to close");
         }

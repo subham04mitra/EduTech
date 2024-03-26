@@ -204,7 +204,11 @@ operation.userDataUpdate = async (data,id) => {
       }
       else if(result=="true"){
         resolve({ Success: true, Message: "Nothing to Update !" });
-      } else {
+      }
+      else if(result==="false"){
+        reject({ Success: false, Message: "Mobile or Email Already Exists" });
+      } 
+      else {
           reject({ Success: false, Message: "User Details Not Matched !" });
       }
      }

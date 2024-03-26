@@ -158,7 +158,7 @@ queries.deleteRecord=async(data,connection_details)=>{
 
 queries.updateRecord=async(data,set,connection_details)=>{
     if(data && connection_details){       
-      
+        try{
         let Model=connection.schemaconnect(connection_details[0],connection_details[1])
         let update_response=  await Model.updateOne(data,{$set:set},{ upsert: false })
         //console.log(update_response);
@@ -171,6 +171,8 @@ queries.updateRecord=async(data,set,connection_details)=>{
             return "true"
         }else {
             return false
+        }}catch(e){
+            return "false"
         }
      
 }}
