@@ -28,7 +28,7 @@ route.put('/user/update/:id', verify, control.userUpdate);
 route.post('/item', verify,control.itemAdd)
 route.get('/item', verify,control.itemList)
 route.get('/item/:itemcode', verify,control.itemView)
-route.put('/item/:itemcode', verify,control.itemUpdate)
+route.put('/item/:id', verify,control.itemUpdate)
 route.delete('/item/:id', verify,control.itemDelete)
 route.post('/item/add/csv',uploadstock.single('file'),verify, control.importItem);
 route.post('/bill', verify,control.billAdd)

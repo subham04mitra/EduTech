@@ -48,6 +48,7 @@ queries.findAll=async(page,limit,connection_details)=>{
             const dbs=  connection.dbconnect(true);
             console.log("....",dbs);
             if(result.length !=0){
+             
                 return result;
             }
             else{
@@ -94,7 +95,33 @@ queries.insertSingle=async(data,connection_details)=>{
         return "Something Went Wrong ! Please Try Again"
     }
 }
-
+queries.insertSingle1=async(data,connection_details)=>{
+    if(data && connection_details){       
+      //console.log(data);
+      //console.log(connection_details);
+        let Model=connection.schemaconnect(connection_details[0],connection_details[1])
+      try{
+        let insertVal= await Model.insertMany(data)
+        const dbs=  connection.dbconnect(true);
+            console.log("....",dbs);
+       //console.log("isert",insertVal);
+        if(insertVal.length !=0){
+            return insertVal;
+        }
+        else{
+            return "Something Went Wrong ! Please Try Again"
+        }
+      }catch(e){
+        //console.log(e);
+        return "Duplicate Data"
+      }
+        
+              
+    }
+    else{
+        return "Something Went Wrong ! Please Try Again"
+    }
+}
 queries.activateUser=async(data,connection_details)=>{
     if(data && connection_details){       
       

@@ -292,15 +292,15 @@ operation.itemView = async (item_cd) => {
     });
     
 };
-operation.itemUpdate = async (data,item_cd) => {
+operation.itemUpdate = async (data,id) => {
     // //console.log(token);
     return new Promise(async (resolve, reject) => {
-       if(!item_cd){
+       if(!id){
         reject({ Success: false, Message: "Nothing to Update" });
        }
        else{
        let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
-        let result=await(query.updateRecord({item_cd:item_cd},data,connection_details));
+        let result=await(query.updateRecord({_id:id},data,connection_details));
         if (result==true) {
             resolve({ Success: true, Message: "Item Details Updated" });
         }
@@ -407,7 +407,8 @@ operation.billCreate = async (data,decode) => {
             bill_number:bill_no,
             date:new Date(),
             user:decode.name,
-            amount:bill_amount
+            amount:bill_amount,
+            pay:data.pay
         }
         let bill_det=[]
         for(let i of data.items){
@@ -427,7 +428,8 @@ operation.billCreate = async (data,decode) => {
        let bill_item_result=await(query.insertSingle(bill_item,connection_details1));
        console.log(bill_item_result);
        if(typeof bill_item_result!="string"){
-        let bill_det_result=await(query.insertSingle(bill_det,connection_details2));
+        let bill_det_result=await(query.insertSingle1(bill_det,connection_details2));
+        console.log(bill_det_result);
         if(typeof bill_det_result!='string'){
             resolve({Success:true,Message:'Bill Created',"Bill NUmber":bill_no})
         }else{

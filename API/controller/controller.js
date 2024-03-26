@@ -134,7 +134,7 @@ service.itemView = async (req, res) => {
 }
 service.itemUpdate = async (req, res) => {
     let data = req.body;
-    let id=req.params.itemcode
+    let id=req.params.id
     try {
         let response = await db.itemUpdate(data, id);
         if (response) {
