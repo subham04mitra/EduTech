@@ -435,7 +435,7 @@ operation.billCreate = async (data,decode) => {
         let bill_det_result=await(query.insertSingle1(bill_det,connection_details2));
         console.log(bill_det_result);
         if(typeof bill_det_result!='string'){
-            resolve({Success:true,Message:'Bill Created',"Bill NUmber":bill_no})
+            resolve({Success:true,Message:'Bill Created',"Bill_no":bill_no})
         }else{
             reject({Success:false,Message:'Bill Entry Done Partially'})
         }
