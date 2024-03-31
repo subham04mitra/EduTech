@@ -704,4 +704,23 @@ operation.updateStore = async () => {
    
   
 };
+operation.statDetail = async () => {
+   
+    return new Promise(async (resolve, reject) => {
+   
+   let connection_details=[process.env.DATABASE,process.env.STAT_SCHEMA]
+    let result=await(query.findOne({},connection_details));
+    if (typeof result !="string") {
+        resolve({
+            Success: true, Data: result
+        })
+    }
+    else{
+        resolve({ Success: false, Message: result  })
+    }
+    reject({ Success: false, Message: "Connection Failed !" })
+
+});
+
+};
 module.exports=operation;

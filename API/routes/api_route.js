@@ -36,4 +36,5 @@ route.get('/bill', verify,control.billList)
 route.put('/bill/:id', verify,control.billUpdate)
 route.delete('/bill/:id', verify,control.billDelete)
 route.post('/store', verify,control.storeUpdate)
+route.get('/store', verify,control.statDetail)
 module.exports = route;

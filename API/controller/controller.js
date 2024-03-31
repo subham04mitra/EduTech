@@ -258,4 +258,16 @@ service.billList = async (req, res) => {
             res.json(err)
         }
     }
+    service.statDetail = async (req, res) => {
+       
+        try {
+            let response = await db.statDetail();
+            if (response) {
+                res.json(response);
+    
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
 module.exports=service;
