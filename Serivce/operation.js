@@ -636,6 +636,22 @@ operation.total_Bill=async()=>{
         return 0
     }
 }
+operation.total_Bill_By_User=async(user)=>{
+    return new Promise(async (resolve, reject) => {
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{user:user})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        
+        resolve({ Success: true, Data: total_amount[0].count  })
+    }
+    else{
+        reject({ Success: false, Message: "Error"  })
+    
+}
+})
+}
 operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
     let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
     let item_rate=await query.findOne({item_cd:item_cd},connection_details)
@@ -698,7 +714,7 @@ operation.updateStore = async () => {
   
       }
      
-           resolve({ Success: false, Message: "Error"  })
+           reject({ Success: false, Message: "Error"  })
     
    });
    

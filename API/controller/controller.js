@@ -270,4 +270,17 @@ service.billList = async (req, res) => {
             res.json(err)
         }
     }
+    service.billByUser = async (req, res) => {
+       
+        let user=req.params.user
+        // console.log(data,id);
+        try {
+            let response = await db.total_Bill_By_User(user);
+            if (response) {
+                res.json(response);
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
 module.exports=service;

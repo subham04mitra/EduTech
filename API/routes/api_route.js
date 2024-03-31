@@ -33,6 +33,7 @@ route.delete('/item/:id', verify,control.itemDelete)
 route.post('/item/add/csv',uploadstock.single('file'),verify, control.importItem);
 route.post('/bill', verify,control.billAdd)
 route.get('/bill', verify,control.billList)
+route.get('/bill/:user', verify,control.billByUser)
 route.put('/bill/:id', verify,control.billUpdate)
 route.delete('/bill/:id', verify,control.billDelete)
 route.post('/store', verify,control.storeUpdate)
