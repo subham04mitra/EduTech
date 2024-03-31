@@ -28,5 +28,13 @@ schemas.bill_detSchema=()=>{
     let schemas=new schema(dict.bill_det)
     return schemas;
 }
+schemas.profitSchema=()=>{
+    let schemas=new schema(dict.profit)
+    return schemas;
+}
+schemas.statSchema=()=>{
+    let schemas=new schema(dict.stat)
+    return schemas;
+}
 module.exports = schemas;
 

@@ -103,6 +103,9 @@
     },
     "pay":{
         "type":"Boolean"
+    },
+    "refund":{
+        "type":"Boolean"
     }
 },
 "bill_det":{
@@ -136,6 +139,48 @@
     },
     "date":{
         "type":"Date"
+    }
+},
+"profit":{
+    "item_cd":{
+        "type":"String"
+    },
+    "item_rate":{
+        "type":"Number"
+    },
+    "sold_at":{
+        "type":"Number"
+    },
+    "bill_number":{
+        "type":"String"
+    },
+    "date":{
+        "type":"Date"
+    },
+    "profit":{
+        "type":"Number"
+    },"item_qty":{
+        "type":"Number"
+    }
+},
+"stat":{
+    "customer_count":{
+        "type":"Number"
+    },
+    "gross_sale":{
+        "type":"Number"
+    },
+    "due_amount":{
+        "type":"Number"
+    },
+    "net_profit":{
+        "type":"Number"
+    },
+    "unpaid_bill":{
+        "type":"Number"
+    },
+    "paid_bill":{
+        "type":"Number"
     }
 }
 }

@@ -220,4 +220,42 @@ service.billList = async (req, res) => {
             res.json(err)
         }
     }
+
+    service.billUpdate = async (req, res) => {
+        let data = req.body;
+        let id=req.params.id
+        // console.log(data,id);
+        try {
+            let response = await db.billUpdate(data, id);
+            if (response) {
+                res.json(response);
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
+    service.billDelete = async (req, res) => {
+        let id=req.params.id
+        try {
+            let response = await db.billDelete(id);
+            if (response) {
+                res.json(response);
+    
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
+    service.storeUpdate = async (req, res) => {
+       
+        // console.log(data,id);
+        try {
+            let response = await db.updateStore();
+            if (response) {
+                res.json(response);
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
 module.exports=service;

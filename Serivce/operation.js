@@ -423,6 +423,7 @@ operation.billCreate = async (data,decode) => {
             i.cus_address=data.cus_address
             i.date=new Date()
             bill_det.push(i) 
+            await operation.profit_amount(i.item_cd,i.amount,bill_no,i.item_qty)
            await operation.updateStocks(i.item_cd,i.item_qty)
             
             
@@ -511,6 +512,194 @@ operation.billList = async (page,limit) => {
            resolve({ Success: false, Message: bill_result  })
        }
        reject({ Success: false, Message: "Connection Failed !" })
+   });
+   
+  
+};
+
+operation.billUpdate = async (data,id) => {
+    // //console.log(token);
+    if(data.refund===true){
+     
+    }
+    if(data.pay===true){
+
+    }
+    if(data.pay===false){
+
+    }
+    return new Promise(async (resolve, reject) => {
+       if(!id){
+        reject({ Success: false, Message: "Nothing to Update" });
+       }
+       else{
+        
+       let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+        let result=await(query.updateRecord({_id:id},data,connection_details));
+        if (result==true) {
+            resolve({ Success: true, Message: "Bill Details Updated" });
+        }
+        else if(result=="true"){
+          resolve({ Success: true, Message: "Nothing to Update !" });
+        } else {
+            reject({ Success: false, Message: "Bil Details Not Matched !" });
+        }
+       }
+  
+        
+    });
+  };
+operation.billDelete = async (id) => {
+// //console.log(token);
+return new Promise(async (resolve, reject) => {
+    if(!id){
+    reject({ Success: false, Message: "Nothing to delete" });
+    }
+    else{
+   let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let result=await(query.deleteRecord({_id:id},connection_details));
+    if (result==true) {
+        resolve({ Success: true, Message: "Bill Deleted Successfully" });
+    }
+     else {
+        reject({ Success: false, Message: "Id Not Matched !" });
+    }
+    }
+
+    
+});
+};
+
+operation.total_sale_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.count(connection_details,"amount")
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_due_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countbyCondition(connection_details,"amount",{pay:false})
+    console.log("due",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_profit_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+    let total_amount=await query.count(connection_details,"profit")
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_unpaidBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{pay:false})
+    console.log("unpaid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+operation.total_paidBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{pay:true})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+operation.total_Bill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotal(connection_details)
+    console.log("total..",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
+    let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+    let item_rate=await query.findOne({item_cd:item_cd},connection_details)
+    
+    if(typeof item_price!="string"){
+
+       let data={
+        item_cd:item_cd,
+        item_rate:(item_rate[0].CP)*qty,
+        item_qty:qty,
+        sold_at:rate,
+        bill_number:bill_no,
+        profit:rate-((item_rate[0].CP)*qty),
+        date:new Date()
+       }
+
+       let connection_details1=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+       let result=await(query.insertSingle(data,connection_details1));      
+       if(typeof result !="string"){
+        return true
+       }
+    }
+    else{
+        return false
+    }
+}
+operation.updateStore = async () => {
+            
+    return new Promise(async (resolve, reject) => {
+       
+      let total_customer=await operation.total_Bill();
+      let gross_sale=await operation.total_sale_amount()
+      let due_amount=await operation.total_due_amount()
+      let net_profit=await operation.total_profit_amount()
+      let upaidBill_count=await operation.total_unpaidBill()
+      let paidBill_count=await operation.total_paidBill()
+      
+      let data={
+        customer_count:total_customer,
+        gross_sale:gross_sale,
+        due_amount:due_amount,
+        net_profit:net_profit,
+        unpaid_bill:upaidBill_count,
+        paid_bill:paidBill_count
+      }
+    //   console.log("data",data);
+      let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
+      let check=await query.findOne({},connection_details1)
+
+      if(typeof check!='string'){
+    
+        await query.updateRecord({_id:check[0]._id},data,connection_details1)
+        resolve({ Success: true, Message: 'Store Updated'  })
+      }
+      else{
+       
+        let check1=await query.insertSingle(data,connection_details1)
+        // console.log("....",check1);
+        resolve({ Success: true, Message: 'Store Updated'  })
+  
+      }
+     
+           resolve({ Success: false, Message: "Error"  })
+    
    });
    
   

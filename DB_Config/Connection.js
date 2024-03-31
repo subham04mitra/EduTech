@@ -9,7 +9,9 @@ let mapping={
     "items":sch.itemSchema(),
     "otps":sch.otpSchema(),
     "bills":sch.billSchema(),
-    "bill_dets":sch.bill_detSchema()
+    "bill_dets":sch.bill_detSchema(),
+    "profits":sch.profitSchema(),
+    "stats":sch.statSchema(),
 }
 
 let connection = {};
