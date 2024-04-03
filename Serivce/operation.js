@@ -591,6 +591,19 @@ operation.total_due_amount=async()=>{
         return 0
     }
 }
+
+
+operation.total_refund_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countbyCondition(connection_details,"amount",{refund:true})
+    console.log("due",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
 operation.total_profit_amount=async()=>{
     let connection_details=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
     let total_amount=await query.count(connection_details,"profit")
@@ -688,14 +701,15 @@ operation.updateStore = async () => {
       let net_profit=await operation.total_profit_amount()
       let upaidBill_count=await operation.total_unpaidBill()
       let paidBill_count=await operation.total_paidBill()
-      
+      let refund_amount=await operation.total_refund_amount()
       let data={
         customer_count:total_customer,
         gross_sale:gross_sale,
         due_amount:due_amount,
         net_profit:net_profit,
         unpaid_bill:upaidBill_count,
-        paid_bill:paidBill_count
+        paid_bill:paidBill_count,
+          refund_amount:refund_amount
       }
     //   console.log("data",data);
       let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
