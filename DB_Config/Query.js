@@ -177,6 +177,29 @@ queries.updateRecord=async(data,set,connection_details)=>{
         }
      
 }}
+
+queries.updateAllRecords = async (data, set, connection_details) => {
+    if (data && connection_details) {
+        try {
+            let Model = connection.schemaconnect(connection_details[0], connection_details[1]);
+            let update_response = await Model.updateMany(data, { $set: set }, { upsert: true });
+            const dbs = connection.dbconnect(true);
+
+            if (update_response.modifiedCount !== 0 || update_response.matchedCount !== 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    } else {
+        return false;
+    }
+};
+
+
 queries.FindLast=async(data,connection_details)=>{
     if(data && connection_details){
         try{

@@ -518,16 +518,7 @@ operation.billList = async (page,limit) => {
 };
 
 operation.billUpdate = async (data,id) => {
-    // //console.log(token);
-    if(data.refund===true){
-     
-    }
-    if(data.pay===true){
-
-    }
-    if(data.pay===false){
-
-    }
+   
     return new Promise(async (resolve, reject) => {
        if(!id){
         reject({ Success: false, Message: "Nothing to Update" });
@@ -537,7 +528,18 @@ operation.billUpdate = async (data,id) => {
        let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
         let result=await(query.updateRecord({_id:id},data,connection_details));
         if (result==true) {
-            resolve({ Success: true, Message: "Bill Details Updated" });
+            if(data.refund===true){
+                let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+                let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
+                let connection_details3=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+                let check=await(query.findOne({_id:id},connection_details))
+                await(query.updateRecord({_id:id},{amount:0},connection_details));
+                await(query.updateAllRecords({bill_number:check[0].bill_number},{amount:0},connection_details2));
+                await(query.updateAllRecords({bill_number:check[0].bill_number},{profit:0},connection_details3));
+               
+            }
+           
+            resolve({ Success: true, Message: "Bill Details Updated ! Kindly Update Store " });
         }
         else if(result=="true"){
           resolve({ Success: true, Message: "Nothing to Update !" });
