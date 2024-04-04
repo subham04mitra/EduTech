@@ -106,6 +106,9 @@
     },
     "refund":{
         "type":"Boolean"
+    },
+    "due_date":{
+        "type":"Date"
     }
 },
 "bill_det":{
