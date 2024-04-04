@@ -187,6 +187,8 @@
     },
     "refund_amount":{
         "type":"Number"
-    }
+    },
+    "due_bill":{
+        "type":"Number"}
 }
 }
