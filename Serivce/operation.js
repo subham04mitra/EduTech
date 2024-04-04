@@ -412,7 +412,8 @@ operation.billCreate = async (data,decode) => {
             date:new Date(),
             user:decode.name,
             amount:bill_amount,
-            pay:data.pay
+            pay:data.pay,
+            due_date:data.due_date
         }
         let bill_det=[]
         for(let i of data.items){
@@ -640,6 +641,20 @@ operation.total_paidBill=async()=>{
         return 0
     }
 }
+
+operation.total_refundBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{refund:true})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+
 operation.total_Bill=async()=>{
     let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotal(connection_details)
@@ -704,6 +719,7 @@ operation.updateStore = async () => {
       let upaidBill_count=await operation.total_unpaidBill()
       let paidBill_count=await operation.total_paidBill()
       let refund_amount=await operation.total_refund_amount()
+         let refundBill_count=await operation.total_refundBill()
       let data={
         customer_count:total_customer,
         gross_sale:gross_sale,
@@ -711,7 +727,8 @@ operation.updateStore = async () => {
         net_profit:net_profit,
         unpaid_bill:upaidBill_count,
         paid_bill:paidBill_count,
-          refund_amount:refund_amount
+          refund_amount:refund_amount,
+          due_bill:refundBill_count
       }
     //   console.log("data",data);
       let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
