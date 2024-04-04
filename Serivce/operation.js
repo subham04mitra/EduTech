@@ -598,14 +598,23 @@ operation.total_due_amount=async()=>{
 
 operation.total_refund_amount=async()=>{
     let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
-    let total_amount=await query.countbyCondition(connection_details,"amount",{refund:true})
-    console.log("due",total_amount);
-    if(typeof total_amount!="string"){
-        return total_amount[0].sum
+    let connection_details2=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+    let check=await(query.findOne({refund:true},connection_details))
+    console.log("rfnd",check);
+   let total_amount=0;
+    for (let i of check){
+       let total_amount2=await query.countbyCondition(connection_details2,"sold_at",{bill_number:i.bill_number})
+       console.log(total_amount2);
+       if(typeof total_amount2!="string"){
+            total_amount+= total_amount2[0].sum
+        }
+        else{
+            total_amount+=0
+        }
     }
-    else{
-        return 0
-    }
+    console.log("refund:",total_amount);
+   return total_amount
+    
 }
 operation.total_profit_amount=async()=>{
     let connection_details=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
