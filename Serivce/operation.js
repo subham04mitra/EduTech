@@ -399,7 +399,7 @@ operation.importCsvtoItem = async (items) => {
 
 operation.billCreate = async (data,decode) => {
     return new Promise(async (resolve, reject) => {
-          
+          console.log(data);
        let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
         let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
         let bill_no=await operation.generateBillno();

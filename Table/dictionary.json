@@ -130,6 +130,10 @@
     "item_cd":{
         "type":"String"
     },
+
+    "item_name":{
+        "type":"String"
+    },
     "item_qty":{
         "type":"Number"
     },
