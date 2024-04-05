@@ -197,5 +197,9 @@
     },
     "due_bill":{
         "type":"Number"}
+        ,
+    "tax_value":{
+        "type":"Number"
+    }
 }
 }
