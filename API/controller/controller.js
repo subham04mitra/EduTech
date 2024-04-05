@@ -283,4 +283,17 @@ service.billList = async (req, res) => {
             res.json(err)
         }
     }
+    service.dueBill = async (req, res) => {
+       
+        
+        // console.log(data,id);
+        try {
+            let response = await db.dueForToday();
+            if (response) {
+                res.json(response);
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
 module.exports=service;

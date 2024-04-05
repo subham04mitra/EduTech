@@ -95,6 +95,35 @@ queries.insertSingle=async(data,connection_details)=>{
         return "Something Went Wrong ! Please Try Again"
     }
 }
+queries.findDue = async (connection_details) => {
+    if (connection_details) {
+        try {
+            let userModel = connection.schemaconnect(connection_details[0], connection_details[1]);
+           
+            // Get today's date without timestamp
+            let todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+
+            let result = await userModel.find(
+                { due_date: { $gte: todayDate, $lt: new Date(todayDate.getTime() + (24 * 60 * 60 * 1000)) } }, 
+                { bill_number: 1, _id: 0 } // Projection to include only bill_number
+            );
+            
+            if (result.length !== 0) {
+                return result.map(item => item.bill_number); // Extracting only bill_number
+            } else {
+                return "No Data Found!";
+            }
+        } catch (e) {
+            console.log(e);
+            return "Error occurred while fetching data!";
+        }
+    } else {
+        return "Something went wrong! Please try again.";
+    }
+}
+
+
 queries.insertSingle1=async(data,connection_details)=>{
     if(data && connection_details){       
       ////console.log(data);
