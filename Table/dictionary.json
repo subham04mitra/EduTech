@@ -109,6 +109,9 @@
     },
     "due_date":{
         "type":"Date"
+    },
+    "tax_value":{
+        "type":"Number"
     }
 },
 "bill_det":{

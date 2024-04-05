@@ -411,9 +411,10 @@ operation.billCreate = async (data,decode) => {
             bill_number:bill_no,
             date:new Date(),
             user:decode.name,
-            amount:bill_amount,
+            amount:bill_amount+data.tax_value,
             pay:data.pay,
-            due_date:data.due_date
+            due_date:data.due_date,
+            tax_value:data.tax_value
         }
         let bill_det=[]
         for(let i of data.items){
@@ -534,7 +535,7 @@ operation.billUpdate = async (data,id) => {
                 let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
                 let connection_details3=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
                 let check=await(query.findOne({_id:id},connection_details))
-                await(query.updateRecord({_id:id},{amount:0},connection_details));
+                await(query.updateRecord({_id:id},{amount:0,tax_value:0},connection_details));
                 await(query.updateAllRecords({bill_number:check[0].bill_number},{amount:0},connection_details2));
                 await(query.updateAllRecords({bill_number:check[0].bill_number},{profit:0},connection_details3));
                
@@ -576,6 +577,16 @@ return new Promise(async (resolve, reject) => {
 operation.total_sale_amount=async()=>{
     let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
     let total_amount=await query.count(connection_details,"amount")
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_tax_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.count(connection_details,"tax_value")
     if(typeof total_amount!="string"){
         return total_amount[0].sum
     }
@@ -729,6 +740,7 @@ operation.updateStore = async () => {
       let paidBill_count=await operation.total_paidBill()
       let refund_amount=await operation.total_refund_amount()
          let refundBill_count=await operation.total_refundBill()
+         let tax_value=await operation.total_tax_amount()
       let data={
         customer_count:total_customer,
         gross_sale:gross_sale,
@@ -737,7 +749,8 @@ operation.updateStore = async () => {
         unpaid_bill:upaidBill_count,
         paid_bill:paidBill_count,
           refund_amount:refund_amount,
-          due_bill:refundBill_count
+          due_bill:refundBill_count,
+          tax_value:tax_value
       }
     //   console.log("data",data);
       let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
