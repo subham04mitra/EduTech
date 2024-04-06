@@ -15,7 +15,10 @@
         "company": {
             "type": "String"
         },
-        "address": {
+        "designation": {
+            "type": "String"
+        },
+        "city": {
             "type": "String"
         },
         "password": {
