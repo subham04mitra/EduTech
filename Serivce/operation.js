@@ -481,7 +481,7 @@ operation.generateBillno=async(DbName)=>{
     }
     
 }
-operation.updateStocks=async(DbName,qty)=>{
+operation.updateStocks=async(DbName,code,qty)=>{
    
    let connection_details=[DbName,process.env.ITEM_SCHEMA]
     let check=await(query.findOne({item_cd:code},connection_details))
