@@ -348,6 +348,7 @@ operation.itemUpdate = async (DbName,data,id) => {
        }
        else{
        let connection_details=[DbName,process.env.ITEM_SCHEMA]
+       
         let result=await(query.updateRecord({_id:id},data,connection_details));
         if (result==true) {
             resolve({ Success: true, Message: "Item Details Updated" });

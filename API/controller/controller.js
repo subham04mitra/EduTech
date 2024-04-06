@@ -141,7 +141,7 @@ service.itemUpdate = async (req, res) => {
     let id=req.params.id
     let DbName=req.decode.db
     try {
-        let response = await db.itemUpdate(DbName.data, id);
+        let response = await db.itemUpdate(DbName,data, id);
         if (response) {
             res.json(response);
         }
