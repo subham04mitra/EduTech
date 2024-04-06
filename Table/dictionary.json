@@ -15,6 +15,9 @@
         "company": {
             "type": "String"
         },
+        "designation": {
+            "type": "String"
+        },
         "address": {
             "type": "String"
         },
