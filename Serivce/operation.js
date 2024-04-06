@@ -459,7 +459,13 @@ operation.billCreate = async (DbName,data,decode) => {
             amount:bill_amount+data.tax_value,
             pay:data.pay,
             due_date:data.due_date,
-            tax_value:data.tax_value
+            tax_value:data.tax_value,
+            cgst_amt:data.cgst_amt,
+            sgst_amt:data.sgst_amt,
+            cgst_per:data.cgst_per,
+            sgst_per:data.sgst_per,
+            igst_amt:data.igst_amt,
+            igst_per:data.igst_per,
         }
         let bill_det=[]
         for(let i of data.items){

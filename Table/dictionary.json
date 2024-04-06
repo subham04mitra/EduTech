@@ -111,6 +111,33 @@
     "due_date":{
         "type":"Date"
     },
+    "cgst_amt":{
+        "type":"Number",
+        "default":0
+    },
+    "sgst_amt":{
+        "type":"Number",
+        "default":0
+    },
+    
+    "cgst_per":{
+        "type":"Number",
+        "default":0
+    },
+    
+    "sgst_per":{
+        "type":"Number",
+        "default":0
+    },
+    "igst_amt":{
+        "type":"Number",
+        "default":0
+    },
+    
+    "igst_per":{
+        "type":"Number",
+        "default":0
+    },
     "tax_value":{
         "type":"Number"
     }
