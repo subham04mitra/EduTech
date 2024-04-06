@@ -1,5 +1,6 @@
 const env=require('dotenv');
 env.config();
+const mongoose = require('mongoose');
 const connection=require('../DB_Config/Connection')
 let queries={}
 
@@ -482,4 +483,30 @@ queries.countTotalbyCondition=async(connection_details,condition)=>{
         }
         
 }
+
+
+
+
+queries.createDB = async (db) => {
+    try {
+        // Connect to MongoDB
+        await mongoose.connect(`${process.env.URL}/${db}`, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        let x=queries.findOne({},[db,'bills'])
+        console.log(x);
+        console.log('Connected to MongoDB');
+
+        // Create collections
+        
+        // Close the connection
+        await mongoose.connection.close();
+        console.log('MongoDB connection closed');
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
+
+
 module.exports=queries;

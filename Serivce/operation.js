@@ -22,6 +22,7 @@ operation.ulogIn = async (data) => {
         if (typeof result !="string") {
             let jwtData = {
                 name: result[0].name,
+                db:result[0].db,
                 pin : result[0].pin_code,
                 Built_Time: new Date()
             }
@@ -65,9 +66,10 @@ operation.userRegistration = async (data) => {
               
             
         //    //console.log("here");
+        data.db = data.company.replace(/[^a-zA-Z0-9]/g, '');
             let result=await(query.insertSingle(data,connection_details));
             if (typeof result !="string") {
-                
+                    query.createDB(data.db)
                 resolve({ Success: true, Message: "User Registered !",  Data: result })
                
                 
@@ -217,10 +219,10 @@ operation.userDataUpdate = async (data,id) => {
   });
 };
 
-operation.itemCreate = async (data) => {
+operation.itemCreate = async (DbName,data) => {
     return new Promise(async (resolve, reject) => {
           
-        let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        let connection_details=[DbName,process.env.ITEM_SCHEMA]
         let check=await(query.findOne({item_cd:data.item_cd,source:data.source},connection_details))
         //console.log(check);
         if(typeof check!="string"){
@@ -249,13 +251,13 @@ operation.itemCreate = async (data) => {
     }
         )}
 
-operation.itemList = async (page,limit) => {
+operation.itemList = async (DbName,page,limit) => {
             
              return new Promise(async (resolve, reject) => {
-                
+               
                 
                
-               let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+               let connection_details=[DbName,process.env.ITEM_SCHEMA]
                 let result=await(query.findAll(page,limit,connection_details));
                 if (typeof result !="string") {
                     resolve({
@@ -272,7 +274,7 @@ operation.itemList = async (page,limit) => {
             
            
         };
-operation.itemView = async (item_cd) => {
+operation.itemView = async (DbName,item_cd) => {
    
         return new Promise(async (resolve, reject) => {
         //console.log("code",item_cd);
@@ -281,7 +283,7 @@ operation.itemView = async (item_cd) => {
             reject({ Success: false, Message: "Give proper id !" })
         }
         else{
-       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[DbName,process.env.ITEM_SCHEMA]
         let result=await(query.findOne({item_cd:item_cd},connection_details));
         if (typeof result !="string") {
             resolve({
@@ -296,14 +298,14 @@ operation.itemView = async (item_cd) => {
     });
     
 };
-operation.itemUpdate = async (data,id) => {
+operation.itemUpdate = async (DbName,data,id) => {
     // //console.log(token);
     return new Promise(async (resolve, reject) => {
        if(!id){
         reject({ Success: false, Message: "Nothing to Update" });
        }
        else{
-       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[DbName,process.env.ITEM_SCHEMA]
         let result=await(query.updateRecord({_id:id},data,connection_details));
         if (result==true) {
             resolve({ Success: true, Message: "Item Details Updated" });
@@ -318,14 +320,14 @@ operation.itemUpdate = async (data,id) => {
         
     });
   };
-operation.itemDelete = async (id) => {
+operation.itemDelete = async (DbName,id) => {
 // //console.log(token);
 return new Promise(async (resolve, reject) => {
     if(!id){
     reject({ Success: false, Message: "Nothing to delete" });
     }
     else{
-   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+   let connection_details=[DbName,process.env.ITEM_SCHEMA]
     let result=await(query.deleteRecord({_id:id},connection_details));
     if (result==true) {
         resolve({ Success: true, Message: "Item Deleted Successfully" });
@@ -340,7 +342,7 @@ return new Promise(async (resolve, reject) => {
 };
 
 
-operation.importCsvtoItem = async (items) => {
+operation.importCsvtoItem = async (DbName,items) => {
     
     return new Promise(async (resolve, reject) => {
     //    //console.log("iems---",items);
@@ -354,7 +356,7 @@ operation.importCsvtoItem = async (items) => {
             
         }
 
-       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+       let connection_details=[DbName,,process.env.ITEM_SCHEMA]
         // //console.log(items);
         for(i of items){
             let check=await(query.findOne({item_cd:i.item_cd,source:i.source},connection_details))
@@ -397,12 +399,12 @@ operation.importCsvtoItem = async (items) => {
     })
 }
 
-operation.billCreate = async (data,decode) => {
+operation.billCreate = async (DbName,decode) => {
     return new Promise(async (resolve, reject) => {
           console.log(data);
-       let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
-        let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
-        let bill_no=await operation.generateBillno();
+       let connection_details1=[DbName,process.env.BILL_SCHEMA]
+        let connection_details2=[DbName,process.env.BILL_DET_SCHEMA]
+        let bill_no=await operation.generateBillno(DbName);
         let bill_amount=0
         for(let i of data.items){
             bill_amount+=i.amount
@@ -425,8 +427,8 @@ operation.billCreate = async (data,decode) => {
             i.cus_address=data.cus_address
             i.date=new Date()
             bill_det.push(i) 
-            await operation.profit_amount(i.item_cd,i.amount,bill_no,i.item_qty)
-           await operation.updateStocks(i.item_cd,i.item_qty)
+            await operation.profit_amount(DbName,i.item_cd,i.amount,bill_no,i.item_qty)
+           await operation.updateStocks(DbName,i.item_cd,i.item_qty)
             
             
                      
@@ -449,9 +451,9 @@ operation.billCreate = async (data,decode) => {
         
     }
         )}
-operation.generateBillno=async()=>{
+operation.generateBillno=async(DbName)=>{
     let bill_no=""
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let check=await(query.findOne({},connection_details))
     if(typeof check!="string"){
         
@@ -479,9 +481,9 @@ operation.generateBillno=async()=>{
     }
     
 }
-operation.updateStocks=async(code,qty)=>{
+operation.updateStocks=async(DbName,qty)=>{
    
-   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+   let connection_details=[DbName,process.env.ITEM_SCHEMA]
     let check=await(query.findOne({item_cd:code},connection_details))
     
     let result=await(query.updateRecord({item_cd:code},{qty:(check[0].qty-qty)},connection_details));
@@ -494,10 +496,10 @@ operation.updateStocks=async(code,qty)=>{
     }
 }
 
-operation.billList = async (page,limit) => {
+operation.billList = async (DbName,page,limit) => {
             
     return new Promise(async (resolve, reject) => {
-      let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
+      let connection_details1=[DbName,process.env.BILL_SCHEMA]
       let connection_details2=process.env.BILL_DET_SCHEMA
       let commonField='bill_number'
       let label='detail'
@@ -519,7 +521,7 @@ operation.billList = async (page,limit) => {
   
 };
 
-operation.billUpdate = async (data,id) => {
+operation.billUpdate = async (DbName,data,id) => {
    
     return new Promise(async (resolve, reject) => {
        if(!id){
@@ -527,13 +529,13 @@ operation.billUpdate = async (data,id) => {
        }
        else{
         
-       let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+       let connection_details=[DbName,process.env.BILL_SCHEMA]
         let result=await(query.updateRecord({_id:id},data,connection_details));
         if (result==true) {
             if(data.refund===true){
-                let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
-                let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
-                let connection_details3=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+                let connection_details=[DbName,process.env.BILL_SCHEMA]
+                let connection_details2=[DbName,process.env.BILL_DET_SCHEMA]
+                let connection_details3=[DbName,process.env.PROFIT_SCHEMA]
                 let check=await(query.findOne({_id:id},connection_details))
                 await(query.updateRecord({_id:id},{amount:0,tax_value:0},connection_details));
                 await(query.updateAllRecords({bill_number:check[0].bill_number},{amount:0},connection_details2));
@@ -574,8 +576,8 @@ return new Promise(async (resolve, reject) => {
 });
 };
 
-operation.total_sale_amount=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_sale_amount=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.count(connection_details,"amount")
     if(typeof total_amount!="string"){
         return total_amount[0].sum
@@ -584,8 +586,8 @@ operation.total_sale_amount=async()=>{
         return 0
     }
 }
-operation.total_tax_amount=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_tax_amount=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.count(connection_details,"tax_value")
     if(typeof total_amount!="string"){
         return total_amount[0].sum
@@ -594,8 +596,8 @@ operation.total_tax_amount=async()=>{
         return 0
     }
 }
-operation.total_due_amount=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_due_amount=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countbyCondition(connection_details,"amount",{pay:false})
     console.log("due",total_amount);
     if(typeof total_amount!="string"){
@@ -607,9 +609,9 @@ operation.total_due_amount=async()=>{
 }
 
 
-operation.total_refund_amount=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
-    let connection_details2=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+operation.total_refund_amount=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
+    let connection_details2=[DbName,process.env.PROFIT_SCHEMA]
     let check=await(query.findOne({refund:true},connection_details))
     console.log("rfnd",check);
    let total_amount=0;
@@ -627,8 +629,8 @@ operation.total_refund_amount=async()=>{
    return total_amount
     
 }
-operation.total_profit_amount=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+operation.total_profit_amount=async(DbName)=>{
+    let connection_details=[DbName,process.env.PROFIT_SCHEMA]
     let total_amount=await query.count(connection_details,"profit")
     if(typeof total_amount!="string"){
         return total_amount[0].sum
@@ -637,8 +639,8 @@ operation.total_profit_amount=async()=>{
         return 0
     }
 }
-operation.total_unpaidBill=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_unpaidBill=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotalbyCondition(connection_details,{pay:false})
     console.log("unpaid",total_amount);
 
@@ -649,8 +651,8 @@ operation.total_unpaidBill=async()=>{
         return 0
     }
 }
-operation.total_paidBill=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_paidBill=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotalbyCondition(connection_details,{pay:true})
     console.log("paid",total_amount);
 
@@ -662,8 +664,8 @@ operation.total_paidBill=async()=>{
     }
 }
 
-operation.total_refundBill=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_refundBill=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotalbyCondition(connection_details,{refund:true})
     console.log("paid",total_amount);
 
@@ -675,8 +677,8 @@ operation.total_refundBill=async()=>{
     }
 }
 
-operation.total_Bill=async()=>{
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+operation.total_Bill=async(DbName)=>{
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotal(connection_details)
     console.log("total..",total_amount);
     if(typeof total_amount!="string"){
@@ -686,9 +688,9 @@ operation.total_Bill=async()=>{
         return 0
     }
 }
-operation.total_Bill_By_User=async(user)=>{
+operation.total_Bill_By_User=async(DbName,user)=>{
     return new Promise(async (resolve, reject) => {
-    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let connection_details=[DbName,process.env.BILL_SCHEMA]
     let total_amount=await query.countTotalbyCondition(connection_details,{user:user})
     console.log("paid",total_amount);
 
@@ -702,8 +704,8 @@ operation.total_Bill_By_User=async(user)=>{
 }
 })
 }
-operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
-    let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+operation.profit_amount=async(DbName,item_cd,rate,bill_no,qty)=>{
+    let connection_details=[DbName,process.env.ITEM_SCHEMA]
     let item_rate=await query.findOne({item_cd:item_cd},connection_details)
     
     if(typeof item_price!="string"){
@@ -718,7 +720,7 @@ operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
         date:new Date()
        }
 
-       let connection_details1=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+       let connection_details1=[DbName,process.env.PROFIT_SCHEMA]
        let result=await(query.insertSingle(data,connection_details1));      
        if(typeof result !="string"){
         return true
@@ -728,7 +730,7 @@ operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
         return false
     }
 }
-operation.updateStore = async () => {
+operation.updateStore = async (DbName) => {
             
     return new Promise(async (resolve, reject) => {
        
@@ -753,7 +755,7 @@ operation.updateStore = async () => {
           tax_value:tax_value
       }
     //   console.log("data",data);
-      let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
+      let connection_details1=[DbName,process.env.STAT_SCHEMA]
       let check=await query.findOne({},connection_details1)
 
       if(typeof check!='string'){
@@ -775,11 +777,11 @@ operation.updateStore = async () => {
    
   
 };
-operation.statDetail = async () => {
+operation.statDetail = async (DbName) => {
    
     return new Promise(async (resolve, reject) => {
    
-   let connection_details=[process.env.DATABASE,process.env.STAT_SCHEMA]
+   let connection_details=[DbName,process.env.STAT_SCHEMA]
     let result=await(query.findOne({},connection_details));
     if (typeof result !="string") {
         resolve({
@@ -794,11 +796,11 @@ operation.statDetail = async () => {
 });
 
 };
-operation.dueForToday = async () => {
+operation.dueForToday = async (DbName) => {
    
     return new Promise(async (resolve, reject) => {
    
-   let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+   let connection_details=[DbName,process.env.BILL_SCHEMA]
     let result=await(query.findDue(connection_details));
     if (typeof result !="string") {
         resolve({

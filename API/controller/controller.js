@@ -99,8 +99,9 @@ service.userUpdate = async (req, res) => {
 }
 service.itemAdd = async (req, res) => {
     let data = req.body;
+    let DbName=req.decode.db
     try {
-        let response = await db.itemCreate(data);
+        let response = await db.itemCreate(DbName,data);
         if (response) {
             res.json(response);
         }
@@ -110,9 +111,11 @@ service.itemAdd = async (req, res) => {
 }
 service.itemList = async (req, res) => {
 let page=(req.query.page);
+let DbName=req.decode.db
+
 let limit=(req.query.limit)
     try {
-        let response = await db.itemList(page,limit);
+        let response = await db.itemList(DbName,page,limit);
         if (response) {
             res.json(response);
         }
@@ -122,8 +125,9 @@ let limit=(req.query.limit)
 }
 service.itemView = async (req, res) => {
     let id=req.params.itemcode
+    let DbName=req.decode.db
     try {
-        let response = await db.itemView(id);
+        let response = await db.itemView(DbName,id);
         if (response) {
             res.json(response);
         }
@@ -135,8 +139,9 @@ service.itemView = async (req, res) => {
 service.itemUpdate = async (req, res) => {
     let data = req.body;
     let id=req.params.id
+    let DbName=req.decode.db
     try {
-        let response = await db.itemUpdate(data, id);
+        let response = await db.itemUpdate(DbName.data, id);
         if (response) {
             res.json(response);
         }
@@ -146,8 +151,9 @@ service.itemUpdate = async (req, res) => {
 }
 service.itemDelete = async (req, res) => {
     let id=req.params.id
+    let DbName=req.decode.db
     try {
-        let response = await db.itemDelete(id);
+        let response = await db.itemDelete(DbName,id);
         if (response) {
             res.json(response);
 
@@ -160,7 +166,7 @@ service.importItem = async (req, res) => {
    
     try {
         let decode=req.decode
-        
+        let DbName=req.decode.db
         let items=[];
         
         csv().fromFile(req.file.path).then(async(response)=>{
@@ -184,7 +190,7 @@ service.importItem = async (req, res) => {
           
             // //console.log(users);
             
-             let first=await db.importCsvtoItem(items);
+             let first=await db.importCsvtoItem(DbName,items);
              if(first.length!=0){
                 res.json({ Success: true, Message: "Imported" })
              }
@@ -199,8 +205,9 @@ service.importItem = async (req, res) => {
 service.billAdd= async (req, res) => {
     let data = req.body;
     let decode=req.decode
+    let DbName=req.decode.db
     try {
-        let response = await db.billCreate(data,decode);
+        let response = await db.billCreate(DbName,data,decode);
         if (response) {
             res.json(response);
         }
@@ -211,8 +218,9 @@ service.billAdd= async (req, res) => {
 service.billList = async (req, res) => {
     let page=(req.query.page);
     let limit=(req.query.limit)
+    let DbName=req.decode.db
         try {
-            let response = await db.billList(page,limit);
+            let response = await db.billList(DbName,page,limit);
             if (response) {
                 res.json(response);
             }
@@ -224,9 +232,10 @@ service.billList = async (req, res) => {
     service.billUpdate = async (req, res) => {
         let data = req.body;
         let id=req.params.id
+        let DbName=req.decode.db
         // console.log(data,id);
         try {
-            let response = await db.billUpdate(data, id);
+            let response = await db.billUpdate(DbName,data, id);
             if (response) {
                 res.json(response);
             }
@@ -250,7 +259,8 @@ service.billList = async (req, res) => {
        
         // console.log(data,id);
         try {
-            let response = await db.updateStore();
+            let DbName=req.decode.db
+            let response = await db.updateStore(DbName);
             if (response) {
                 res.json(response);
             }
@@ -261,7 +271,8 @@ service.billList = async (req, res) => {
     service.statDetail = async (req, res) => {
        
         try {
-            let response = await db.statDetail();
+            let DbName=req.decode.db
+            let response = await db.statDetail(DbName);
             if (response) {
                 res.json(response);
     
@@ -273,9 +284,11 @@ service.billList = async (req, res) => {
     service.billByUser = async (req, res) => {
        
         let user=req.params.user
+        let DbName=req.decode.db
+
         // console.log(data,id);
         try {
-            let response = await db.total_Bill_By_User(user);
+            let response = await db.total_Bill_By_User(DbName,user);
             if (response) {
                 res.json(response);
             }
@@ -285,10 +298,10 @@ service.billList = async (req, res) => {
     }
     service.dueBill = async (req, res) => {
        
-        
+        let DbName=req.decode.db
         // console.log(data,id);
         try {
-            let response = await db.dueForToday();
+            let response = await db.dueForToday(DbName);
             if (response) {
                 res.json(response);
             }

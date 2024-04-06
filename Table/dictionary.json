@@ -5,9 +5,7 @@
         },
         "email": {
             "type": "String",
-            "unique":true
-     
-            
+            "unique":true         
         },
         "mobile": {
             "type": "Number",
@@ -31,7 +29,10 @@
         },
         "verified":{
             "type":"String"
-        }    
+        } ,
+        "db":{
+            "type":"String"
+        }   
 },
     "jwt": {
         "token": {
