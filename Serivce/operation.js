@@ -8,47 +8,89 @@ const query=require('../DB_Config/Query');
 let operation = {};
 
 
-operation.ulogIn = async (data) => {
-    if(data.email=="" || data.password==""){
-     reject({ Success: false, Message: "Give Login Credetials !" })
-    }
-    else{
-     return new Promise(async (resolve, reject) => {
-        data.active="Y"
+// operation.ulogIn = async (data) => {
+//     if(data.email=="" || data.password==""){
+//      reject({ Success: false, Message: "Give Login Credetials !" })
+//     }
+//     else{
+//      return new Promise(async (resolve, reject) => {
+//         data.active="Y"
         
        
-      let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
-        let result=await(query.findOne(data,connection_details));
-        if (typeof result !="string") {
+//       let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+//         let result=await(query.findOne(data,connection_details));
+//         if (typeof result !="string") {
+//             let jwtData = {
+//                 name: result[0].name,
+//                 db:result[0].db,
+//                 pin : result[0].pin_code,
+//                 Built_Time: new Date()
+//             }
+//             let token =jwt.sign(jwtData, process.env.SECRET_KEY, { expiresIn: "1h" });          
+//             let jwtdetails={
+//                 name:result[0].name,
+//                 token:token,
+//                 logout:false,
+//                 email:result[0].email              
+//             }
+//            let jwt_connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+//              let jwtresult=   await(query.insertSingle(jwtdetails,jwt_connection_details));
+//              if (typeof jwtresult !="string") {
+//                 resolve({ Success: true, Message: "Login Successfull",  Data: result ,Token:token})
+//              }
+//              else{
+//                 resolve({ Success: false, Message: result  })
+//             }
+//         }
+//         else{
+//             resolve({ Success: false, Message: result  })
+//         }
+//         reject({ Success: false, Message: "Connection Failed !" })
+//     });
+//     }
+   
+// };
+operation.ulogIn = async (data) => {
+    if (!data.email || !data.password) {
+        return Promise.reject({ Success: false, Message: "Please provide email and password" });
+    }
+
+    return new Promise(async (resolve, reject) => {
+        data.active = "Y";
+        let connection_details = [process.env.DATABASE, process.env.USER_SCHEMA];
+
+        try {
+            let result = await query.findOne(data, connection_details);
+            if (typeof result === "string") {
+                return reject({ Success: false, Message: result });
+            }
+
             let jwtData = {
                 name: result[0].name,
-                db:result[0].db,
-                pin : result[0].pin_code,
+                db: result[0].db,
+                pin: result[0].pin_code,
                 Built_Time: new Date()
+            };
+
+            let token = jwt.sign(jwtData, process.env.SECRET_KEY, { expiresIn: "1h" });
+            let jwtdetails = {
+                name: result[0].name,
+                token: token,
+                logout: false,
+                email: result[0].email
+            };
+
+            let jwt_connection_details = [process.env.DATABASE, process.env.JWT_SCHEMA];
+            let jwtresult = await query.insertSingle(jwtdetails, jwt_connection_details);
+            if (typeof jwtresult === "string") {
+                return reject({ Success: false, Message: jwtresult });
             }
-            let token =jwt.sign(jwtData, process.env.SECRET_KEY, { expiresIn: "1h" });          
-            let jwtdetails={
-                name:result[0].name,
-                token:token,
-                logout:false,
-                email:result[0].email              
-            }
-           let jwt_connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
-             let jwtresult=   await(query.insertSingle(jwtdetails,jwt_connection_details));
-             if (typeof jwtresult !="string") {
-                resolve({ Success: true, Message: "Login Successfull",  Data: result ,Token:token})
-             }
-             else{
-                resolve({ Success: false, Message: result  })
-            }
+
+            resolve({ Success: true, Message: "Login Successful", Data: result, Token: token });
+        } catch (error) {
+            reject({ Success: false, Message: "Connection Failed !" });
         }
-        else{
-            resolve({ Success: false, Message: result  })
-        }
-        reject({ Success: false, Message: "Connection Failed !" })
     });
-    }
-   
 };
 
 
@@ -734,15 +776,15 @@ operation.updateStore = async (DbName) => {
             
     return new Promise(async (resolve, reject) => {
        
-      let total_customer=await operation.total_Bill();
-      let gross_sale=await operation.total_sale_amount()
-      let due_amount=await operation.total_due_amount()
-      let net_profit=await operation.total_profit_amount()
-      let upaidBill_count=await operation.total_unpaidBill()
-      let paidBill_count=await operation.total_paidBill()
-      let refund_amount=await operation.total_refund_amount()
-         let refundBill_count=await operation.total_refundBill()
-         let tax_value=await operation.total_tax_amount()
+      let total_customer=await operation.total_Bill(DbName);
+      let gross_sale=await operation.total_sale_amount(DbName)
+      let due_amount=await operation.total_due_amount(DbName)
+      let net_profit=await operation.total_profit_amount(DbName)
+      let upaidBill_count=await operation.total_unpaidBill(DbName)
+      let paidBill_count=await operation.total_paidBill(DbName)
+      let refund_amount=await operation.total_refund_amount(DbName)
+         let refundBill_count=await operation.total_refundBill(DbName)
+         let tax_value=await operation.total_tax_amount(DbName)
       let data={
         customer_count:total_customer,
         gross_sale:gross_sale,

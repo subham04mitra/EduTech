@@ -106,7 +106,7 @@ queries.findDue = async (connection_details) => {
             todayDate.setHours(0, 0, 0, 0);
 
             let result = await userModel.find(
-                { due_date: { $gte: todayDate, $lt: new Date(todayDate.getTime() + (24 * 60 * 60 * 1000)) } }, 
+                { due_date: { $lt: new Date(todayDate.getTime() + (24 * 60 * 60 * 1000)) } }, 
                 { bill_number: 1, _id: 0 } // Projection to include only bill_number
             );
             
@@ -123,6 +123,7 @@ queries.findDue = async (connection_details) => {
         return "Something went wrong! Please try again.";
     }
 }
+
 
 
 queries.insertSingle1=async(data,connection_details)=>{
