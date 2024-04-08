@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const db = require('../../Serivce/operation');
 const csv=require('csvtojson');
 let service = {};
@@ -162,46 +164,84 @@ service.itemDelete = async (req, res) => {
         res.json(err)
     }
 }
-service.importItem = async (req, res) => {
+// service.importItem = async (req, res) => {
    
-    try {
-        let decode=req.decode
-        let DbName=req.decode.db
-        let items=[];
+//     try {
+//         let decode=req.decode
+//         let DbName=req.decode.db
+//         let items=[];
         
-        csv().fromFile(req.file.path).then(async(response)=>{
-            // //console.log(response);
-            //console.log("res",response);
-            for(var x=0;x<response.length;x++){
-                items.push({
-                    item_cd:response[x].Code,
-                    category:response[x].Category,
-                    subcategory:response[x].Subcategory,
-                    name:response[x].Name,
-                    source:response[x].Source,
-                    item_des:response[x].Description,
-                    SP:response[x].Sale,
-                    CP:response[x].Cost,
-                    qty:response[x].Quantity
+//         csv().fromFile(req.file.path).then(async(response)=>{
+//             // //console.log(response);
+//             //console.log("res",response);
+//             for(var x=0;x<response.length;x++){
+//                 items.push({
+//                     item_cd:response[x].Code,
+//                     category:response[x].Category,
+//                     subcategory:response[x].Subcategory,
+//                     name:response[x].Name,
+//                     source:response[x].Source,
+//                     item_des:response[x].Description,
+//                     SP:response[x].Sale,
+//                     CP:response[x].Cost,
+//                     qty:response[x].Quantity
                  
-                })
+//                 })
                 
-            }
+//             }
           
-            // //console.log(users);
+//             // //console.log(users);
             
-             let first=await db.importCsvtoItem(DbName,items);
-             if(first.length!=0){
-                res.json({ Success: true, Message: "Imported" })
-             }
+//              let first=await db.importCsvtoItem(DbName,items);
+//              if(first.length!=0){
+//                 res.json({ Success: true, Message: "Imported" })
+//              }
             
         
-        })
+//         })
         
+//     } catch (err) {
+//         res.json({ Success: false, Message: "Failed" })
+//     }
+// }
+service.importItem = async (req, res) => {
+    try {
+        let decode = req.decode;
+        let DbName = req.decode.db;
+        let items = [];
+        
+        // Validate file extension
+        if (req.file && path.extname(req.file.originalname).toLowerCase() === '.csv') {
+            csv().fromFile(req.file.path).then(async (response) => {
+                for (var x = 0; x < response.length; x++) {
+                    items.push({
+                        item_cd: response[x].Code,
+                        category: response[x].Category,
+                        subcategory: response[x].Subcategory,
+                        name: response[x].Name,
+                        source: response[x].Source,
+                        item_des: response[x].Description,
+                        SP: response[x].Sale,
+                        CP: response[x].Cost,
+                        qty: response[x].Quantity
+                    });
+                }
+                
+                let first = await db.importCsvtoItem(DbName, items);
+                if (first.length != 0) {
+                    fs.unlinkSync(req.file.path);
+                    res.json({ Success: true, Message: "Imported" });
+                }
+            });
+        } else {
+            fs.unlinkSync(req.file.path);
+            res.json({ Success: false, Message: "Please upload a CSV file." });
+        }
     } catch (err) {
-        res.json({ Success: false, Message: "Failed" })
+        fs.unlinkSync(req.file.path);
+        res.json({ Success: false, Message: "Failed" });
     }
-}
+};
 service.billAdd= async (req, res) => {
     let data = req.body;
     let decode=req.decode
