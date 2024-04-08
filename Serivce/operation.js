@@ -399,7 +399,7 @@ operation.importCsvtoItem = async (DbName,items) => {
             
         }
 
-       let connection_details=[DbName,,process.env.ITEM_SCHEMA]
+       let connection_details=[DbName,process.env.ITEM_SCHEMA]
         // //console.log(items);
         for(i of items){
             let check=await(query.findOne({item_cd:i.item_cd,source:i.source},connection_details))
