@@ -210,9 +210,21 @@ service.importItem = async (req, res) => {
         let DbName = req.decode.db;
         let items = [];
         
-        // Validate file extension
+        // Define expected column names
+        const expectedColumns = ['Code', 'Category', 'Subcategory', 'Name', 'Source', 'Description', 'Sale', 'Cost', 'Quantity'];
+
+        // Validate file extension and column names
         if (req.file && path.extname(req.file.originalname).toLowerCase() === '.csv') {
             csv().fromFile(req.file.path).then(async (response) => {
+                // Check if column names are exact match
+                const actualColumns = Object.keys(response[0]);
+                const isColumnMatch = expectedColumns.every(col => actualColumns.includes(col));
+
+                if (!isColumnMatch) {
+                    fs.unlinkSync(req.file.path);
+                    return res.json({ Success: false, Message: "Column names do not match the expected format." });
+                }
+
                 for (var x = 0; x < response.length; x++) {
                     items.push({
                         item_cd: response[x].Code,
@@ -242,6 +254,7 @@ service.importItem = async (req, res) => {
         res.json({ Success: false, Message: "Failed" });
     }
 };
+
 service.billAdd= async (req, res) => {
     let data = req.body;
     let decode=req.decode
