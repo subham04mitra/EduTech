@@ -108,7 +108,7 @@ operation.userRegistration = async (data) => {
               
             
         //    //console.log("here");
-        data.db = data.company.replace(/[^a-zA-Z0-9]/g, '');
+        data.db = data.company_gstin.replace(/[^a-zA-Z0-9]/g, '');
             let result=await(query.insertSingle(data,connection_details));
             if (typeof result !="string") {
                     query.createDB(data.db)

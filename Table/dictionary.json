@@ -15,6 +15,18 @@
         "company": {
             "type": "String"
         },
+        "company_address": {
+            "type": "String"
+        },
+        "company_email": {
+            "type": "String"
+        },
+        "company_mobile": {
+            "type": "String"
+        },
+        "company_gstin": {
+            "type": "String"
+        },
         "designation": {
             "type": "String"
         },
