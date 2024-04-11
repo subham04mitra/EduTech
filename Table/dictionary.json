@@ -102,6 +102,12 @@
         } ,
         "qty":{
             "type":"Number"
+        },
+        "gst":{
+            "type":"Boolean"
+        },
+        "gst_rate":{
+            "type":"Number"
         }
 },
 "bill":{

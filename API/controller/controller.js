@@ -211,7 +211,7 @@ service.importItem = async (req, res) => {
         let items = [];
         
         // Define expected column names
-        const expectedColumns = ['Code', 'Category', 'Subcategory', 'Name', 'Source', 'Description', 'Sale', 'Cost', 'Quantity'];
+        const expectedColumns = ['Code', 'Category', 'Subcategory', 'Name', 'Source', 'Description', 'Sale', 'Cost', 'Quantity','GST','GSTRate'];
 
         // Validate file extension and column names
         if (req.file && path.extname(req.file.originalname).toLowerCase() === '.csv') {
@@ -235,7 +235,9 @@ service.importItem = async (req, res) => {
                         item_des: response[x].Description,
                         SP: response[x].Sale,
                         CP: response[x].Cost,
-                        qty: response[x].Quantity
+                        qty: response[x].Quantity,
+                        gst:response[x].GST=='GST'?true:false,
+                        gst_rate:response[x].GSTRate,
                     });
                 }
                 
